@@ -4,16 +4,58 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <!-- <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon"> -->
     <link rel="stylesheet" href="./assets/css/style.css">
     <title>Where's the Beer</title>
 </head>
 <body>
-    <form>
-        <label for="searchText">Search for breweries:</label><br>
-        <input type="text" id="searchText" name="searchText" placeholder="Zip or City or Name"><br>
-        <input type="submit" value="Search" id ="searchBtn">
-      </form>
+    
+    <section class="hero is-info">
+        <div class="hero-body">
+          <p class="title">
+            Where's the Beer?
+          </p>
+          <p class="subtitle">
+            Brewery Directory
+          </p>
+        </div>
+      </section>
+    
+    <section class="section">
+    <div class="columns">
+        <div class="column is-one-quarter p-10">
+          <div id="searchForm" class="mb-5">
+            <form class="p-2">
+                <label for="searchInput">Search for Breweries:</label>
+                <input id="searchInput" class="input is-medium mb-3" type="text" placeholder="Search by City, Zip, or Brewery Name">
+                <button class="button is-info">Search</button>
+            </form>
+          </div>
+          <div id="searchResults">
+            <div class="box">
+                Search Results 1
+            </div>
+            <div class="box">
+                Search Results 2
+            </div>
+          </div>
+
+        </div>
+        <div class="column is-three-quarters">
+            Main Body
+            <div id="map">
+                Map goes here
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <section class="section bg-obvs">
+        Collage or footer or yelp reviews here
+    </section>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
