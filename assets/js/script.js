@@ -89,7 +89,6 @@ function geocode(location) {
         .then(res => {
             if (res && res.results && res.results.length) {
                 currentLocation = res.results[0].geometry.location;
-                console.log("end geocode")
                 return res.results[0].geometry.location;
             } else {
                 Promise.reject(res);
@@ -126,32 +125,21 @@ function showResults(data) {
 
 // center ({lat: lat, lng: lng}) results array of brewery objects
 function updateMap(center, results) {
-    console.log(" updateMap center:  ", center);
-    console.log("updateMap results: ", results);
-    if (markers && markers.length) {
-        markers.forEach(marker => {
-            // marker.setMap(null);
-            marker = null;
-        })
+    if (markers.length) {
+        // remove old markers from map, marker.setMap(null);
+        markers.forEach(marker => marker = null);
+        markers = [];
     }
 
-    let mapOptions = {
-        center,
-        zoom: 12
-    };
-    let map = new google.maps.Map(document.querySelector("#map"), mapOptions);
+    let map = new google.maps.Map(document.querySelector("#map"), { center });
+    let infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
+    let bounds = new google.maps.LatLngBounds();
 
-    const infoWindow = new google.maps.InfoWindow({
-        content: "",
-        disableAutoPan: true,
-    });
-    // Create an array of alphabetical characters used to label the markers.
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // Add some markers to the map.
+    // Add markers to the map.
     markers = results.map((brewery, i) => {
-
-        // const label = labels[i % labels.length];
-        var position = { lat: Number(brewery.latitude), lng: Number(brewery.longitude) }
+        // var position = { lat: Number(brewery.latitude), lng: Number(brewery.longitude) }
+        var position = new google.maps.LatLng(brewery.latitude, brewery.longitude);
+        bounds.extend(position);
         const marker = new google.maps.Marker({
             position,
             map,
@@ -162,16 +150,15 @@ function updateMap(center, results) {
             // animation: google.maps.Animation.BOUNCE,
             // icon: './wittcode-marker.png',
         });
+        map.fitBounds(bounds);
 
-        // markers can only be keyboard focusable when they have click listeners
         // open info window when marker is clicked
         marker.addListener("click", () => {
             infoWindow.setContent(brewery.name);
             infoWindow.open(map, marker);
-            map.setCenter(position)
+            map.setCenter(position);
         });
     });
-
 }
 
 // ******* END ***********

@@ -1,7 +1,7 @@
-body {
-    /* background-color: darkgreen; */
-    /* min-height: 100vh; */
-}
+/* body {
+    background-color: darkgreen;
+    min-height: 100vh;
+} */
 
 nav {
     padding-left: 10px;
@@ -14,8 +14,8 @@ nav {
 
 .sidebar {
     background-color: crimson;
-    /* max-height: 200px; */
-    /* overflow-y: auto; */
+    max-height: 80vh;
+    overflow-y: scroll;
 }
 
 .search-results {
@@ -25,4 +25,15 @@ nav {
 
 .bg-obvs {
     background-color: salmon;
+}
+
+#mapColumn {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+@media screen and (min-width: 769px) {
+    .hero-body {
+        padding: 1rem 3rem !important;
+    }
 }
