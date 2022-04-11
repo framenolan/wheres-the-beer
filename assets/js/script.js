@@ -55,7 +55,6 @@ function getByCoord(coord) {
 
 function getByName(name) {
     // fetch by name
-    console.log("searching by name");
     fetch(`https://api.openbrewerydb.org/breweries?by_name=${name}`)
         .then(function (response) {
             if(!response.ok) {
@@ -92,7 +91,7 @@ function geocode(location) {
 }
 
 function showResults(data) {
-    console.log(data);
+    $("#searchResults").empty();
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
