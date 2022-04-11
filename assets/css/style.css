@@ -1,0 +1,21 @@
+body {
+    /* background-color: darkgreen; */
+    /* min-height: 100vh; */
+}
+
+nav {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.body-padding {
+    padding: 20px;
+}
+
+.sidebar {
+    background-color: crimson;
+}
+
+.bg-obvs {
+    background-color: salmon;
+}
