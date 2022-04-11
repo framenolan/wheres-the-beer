@@ -28,7 +28,8 @@ function validateEntry(e) {
                 getByCoord(coord);
             });
         } else {
-            console.log("invalid city entry");
+            $("#searchResults").empty();
+            $("#searchResults").append($(`<div class="box">Enter City, State</div>`));
         }
     } else {
         getByName(e);
@@ -37,6 +38,10 @@ function validateEntry(e) {
 
 function getByCoord(coord) {
         // fetch by coordinate sort by distance
+        if (!coord) {
+            showResults([]);
+            return;
+        }
         fetch(`https://api.openbrewerydb.org/breweries?by_dist=${coord.lat},${coord.lng}`)
         .then(function (response) {
             if (!response.ok) {
@@ -55,7 +60,6 @@ function getByCoord(coord) {
 
 function getByName(name) {
     // fetch by name
-    console.log("searching by name");
     fetch(`https://api.openbrewerydb.org/breweries?by_name=${name}`)
         .then(function (response) {
             if(!response.ok) {
@@ -84,6 +88,7 @@ function geocode(location) {
                 return res.results[0].geometry.location;
             } else {
                 Promise.reject(res);
+                return null;
             }
         })
         .catch(err => {
@@ -93,6 +98,7 @@ function geocode(location) {
 
 function showResults(data) {
     console.log(data);
+    $("#searchResults").empty();
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
