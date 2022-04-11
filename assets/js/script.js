@@ -66,6 +66,22 @@ function getByCity(city) {
 function getByName(name) {
     // TODO: code for search by name
     console.log("searching by name");
+    fetch(`https://api.openbrewerydb.org/breweries?by_name=${name}`)
+        .then(function (response) {
+            if(!response.ok) {
+                throw new Error('response not ok');
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            if (data.length === 0) {
+                console.log('no results by name')
+            }
+        })
+        .catch(function(error) {
+            console.long('error')
+        })
 }
 
 $("#searchBtn").on('click', function (event) {
