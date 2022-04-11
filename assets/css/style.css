@@ -18,6 +18,11 @@ nav {
     overflow-y: auto;
 }
 
+.search-results {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .bg-obvs {
     background-color: salmon;
 }
