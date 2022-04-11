@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <!-- <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon"> -->
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <title>Where's the Beer</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <!-- <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon"> -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/map.css">
+  <title>Where's the Beer</title>
 </head>
+
 <body>
+<<<<<<< HEAD
     
     <section class="hero is-info">
         <div class="hero-body">
@@ -43,25 +47,63 @@
                 Map goes here
             </div>
         </div>
+=======
+
+  <section class="hero is-info">
+    <div class="hero-body">
+      <p class="title">
+        Where's the Beer?
+      </p>
+      <p class="subtitle">
+        Brewery Directory
+      </p>
+>>>>>>> dev
     </div>
-    </section>
+  </section>
 
-    <section class="section bg-obvs">
-        Yelp reviews here
-    </section>
-
-    <section class="section">
-        <div class="columns">
-            <div class="column is-one-quarter"></div>
-            <div id="collage" class="column is-three-quarters">
-                Collage of photos here
-            </div>
+  <section class="section">
+    <div class="columns">
+      <div class="column is-p-10 sidebar">
+        <div id="searchForm" class="mb-5">
+          <form class="p-2">
+            <label for="searchInput">Search for Breweries:</label>
+            <input id="searchInput" class="input is-medium mb-3" type="text"
+              placeholder="Search by City, Zip, or Brewery Name">
+            <button class="button is-info" id="searchBtn">Search</button>
+          </form>
         </div>
-    </section>
+        <div class="sidebar" id="searchResults">
+
+        </div>
+
+      </div>
+      <div class="column is-three-quarters">
+        <div id="mapContainer">
+          <div id="map"></div>
+          <div id="sidebar"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-obvs">
+    Yelp reviews here
+  </section>
+
+  <section class="section">
+    <div class="columns">
+      <div class="column is-one-quarter"></div>
+      <div id="collage" class="column is-three-quarters">
+        Collage of photos here
+      </div>
+    </div>
+  </section>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="./assets/js/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-pYFi70-5pv6ldc1jAStH871OgfoMre8&v=weekly"></script>
+  <script src="./assets/js/script.js"></script>
 </body>
+
 </html>
