@@ -46,7 +46,7 @@ function getByCoord(coord) {
             return response.json();
         })
         .then(function (data) {
-            console.log(data);
+            showResults(data);
         })
         .catch(function(error) {
             console.log('error');
@@ -64,10 +64,7 @@ function getByName(name) {
             return response.json();
         })
         .then(function (data) {
-            console.log(data);
-            if (data.length === 0) {
-                console.log('no results by name')
-            }
+            showResults(data);
         })
         .catch(function(error) {
             console.long('error')
@@ -95,15 +92,25 @@ function geocode(location) {
 }
 
 function showResults(data) {
+    console.log(data);
     if (data.length === 0) {
-        //TODO: show no results on html
+        $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
-
+        for (let i=0; i<data.length; i++) {
+            var brewBox = $(`<div class="box"></div>`);
+            brewBox.append($(`<h1>${data[i].name}</h1>`));
+            brewBox.append($(`<p>${data[i].street}</p>`));
+            brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
+            brewBox.append($(`<p>${data[i].phone}</p>`));
+            brewBox.append($(`<p>${data[i].website_url}</p>`));
+            $("#searchResults").append(brewBox);
+        }
     }
 }
 
+
 $("#searchBtn").on('click', function (event) {
     event.preventDefault();
-    validateEntry($("#searchText").val());
-    $("#searchText").val("");
+    validateEntry($("#searchInput").val());
+    $("#searchInput").val("");
 });
