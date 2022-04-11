@@ -14,12 +14,12 @@ nav {
 
 .sidebar {
     background-color: crimson;
-    max-height: 200px;
-    overflow-y: auto;
+    /* max-height: 200px; */
+    /* overflow-y: auto; */
 }
 
 .search-results {
-    max-height: 200px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
