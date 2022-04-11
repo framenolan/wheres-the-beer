@@ -16,6 +16,11 @@ nav {
     background-color: crimson;
 }
 
+.search-results {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
 .bg-obvs {
     background-color: salmon;
 }
