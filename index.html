@@ -31,13 +31,18 @@
         <div class="column is-p-10 sidebar">
           <div id="searchForm" class="mb-5">
             <form class="p-2">
-              <label for="searchInput">Search for Breweries:</label>
+              <label for="searchInput" class="label is-medium">Search for Breweries:</label>
               <input id="searchInput" class="input is-medium mb-3" type="text"
-                placeholder="Search by City, Zip, or Brewery Name">
+                placeholder="Name, Zip, or City/State">
               <button class="button is-info" id="searchBtn">Search</button>
             </form>
+            <div class="content" id="resultsTextDiv">
+              <p id="resultsText">
+
+              </p>
+            </div>
           </div>
-          <div class="sidebar" id="searchResults">
+          <div class="search-results" id="searchResults">
 
           </div>
 
