@@ -300,12 +300,14 @@ $("#map").on("click", ".directionsButton", event => {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    calculateAndDisplayRoute(destination)
                 });
+            } else {
+                // no user location and user denied location access
             }
+        } else {
+            calculateAndDisplayRoute(destination)
         }
-        calculateAndDisplayRoute(destination)
-    } else {
-        // nothing 
     }
 });
 
