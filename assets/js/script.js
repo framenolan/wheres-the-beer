@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, markers = [];
+var currentLocation, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -89,7 +89,6 @@ function geocode(location) {
         .then(res => {
             if (res && res.results && res.results.length) {
                 currentLocation = res.results[0].geometry.location;
-                console.log("end geocode")
                 return res.results[0].geometry.location;
             } else {
                 Promise.reject(res);
@@ -108,12 +107,15 @@ function showResults(data) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
         for (let i = 0; i < data.length; i++) {
-            var brewBox = $(`<div class="box"></div>`);
-            brewBox.append($(`<h1>${data[i].name}</h1>`));
+            var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
+            if (data[i].website_url) {
+                brewBox.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].name}</a>`));
+            } else {
+                brewBox.append($(`<h1>${data[i].name}</h1>`));
+            }
             brewBox.append($(`<p>${data[i].street}</p>`));
             brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
             brewBox.append($(`<p>${data[i].phone}</p>`));
-            brewBox.append($(`<p>${data[i].website_url}</p>`));
             $("#searchResults").append(brewBox);
         }
         updateMap(currentLocation, data);
@@ -124,55 +126,126 @@ function showResults(data) {
 // ******* STUFF BELOW ***********
 // ******* HERE ***********
 
+// IMPORTANT: this event bubbling links the corresponding map markers map with list items
+// either way markerToggleListItem will be called so all styling and dynamic changes only need to be there
+// it's the next function below
+$("#searchResults").on("click", ".box", event => {
+    if (markers.length) {
+        var index = $(event.target).is("div") ? $(event.target).attr('data-index') : $(event.target).parent('div').attr('data-index');
+        google.maps.event.trigger(markers[index], 'click');
+    }
+});
+
+function markerToggleListItem(i) {
+    // to do scorll to this maybe expand, add class, make sure to remove previous one
+    $(`#idx-${i}`).css("backgroundColor", "red");
+    // change the styling of the previously clicked list item back by removing the class or whatever
+    // do the opposite here of what we did above
+    if (previousListItemIndex !== null) {
+        $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+    }
+    previousListItemIndex = i;
+}
+
 // center ({lat: lat, lng: lng}) results array of brewery objects
 function updateMap(center, results) {
-    console.log(" updateMap center:  ", center);
-    console.log("updateMap results: ", results);
-    if (markers && markers.length) {
-        markers.forEach(marker => {
-            // marker.setMap(null);
-            marker = null;
-        })
+    if (markers.length) {
+        // remove old markers from map, marker.setMap(null);
+        markers.forEach(marker => marker = null);
+        markers = [];
     }
 
-    let mapOptions = {
-        center,
-        zoom: 12
-    };
-    let map = new google.maps.Map(document.querySelector("#map"), mapOptions);
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsService = new google.maps.DirectionsService();
+    let map = new google.maps.Map(document.querySelector("#map"), { center, disableDefaultUI: true });
+    let infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
+    let bounds = new google.maps.LatLngBounds();
 
-    const infoWindow = new google.maps.InfoWindow({
-        content: "",
-        disableAutoPan: true,
-    });
-    // Create an array of alphabetical characters used to label the markers.
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // Add some markers to the map.
-    markers = results.map((brewery, i) => {
+    directionsRenderer.setMap(map);
+    directionsRenderer.setPanel(document.querySelector("#sidebar"));
 
-        // const label = labels[i % labels.length];
-        var position = { lat: Number(brewery.latitude), lng: Number(brewery.longitude) }
+    // Add markers to the map.
+    for (let i = 0; i < results.length; i++) {
+        var position = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+        bounds.extend(position);
         const marker = new google.maps.Marker({
             position,
             map,
-            title: brewery.name,
+            title: results[i].name,
             optimized: false,
             animation: google.maps.Animation.DROP,
-            // label: brewery.name,
+            // label: results[i].name,
             // animation: google.maps.Animation.BOUNCE,
             // icon: './wittcode-marker.png',
         });
-
-        // markers can only be keyboard focusable when they have click listeners
+        map.fitBounds(bounds);
         // open info window when marker is clicked
-        marker.addListener("click", () => {
-            infoWindow.setContent(brewery.name);
+        marker.addListener("click", (event) => {
+            infoWindow.setContent(`
+                <h3>${results[i].name}</h3>
+                <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
+            `);
             infoWindow.open(map, marker);
-            map.setCenter(position)
+            map.panTo(position);
+            markerToggleListItem(i);
         });
-    });
-
+        markers.push(marker);
+    }
+    previousListItemIndex = null;
 }
+
+// gets user location
+function getUserLocation() {
+    return fetch('https://ipapi.co/json')
+        .then(res => res.json())
+        .then(res => userCurrentLocation = { lat: res.latitude, lng: res.longitude })
+        .catch(err => console.log("err: ", err));
+}
+
+getUserLocation()
+
+// display directions and draw route
+function calculateAndDisplayRoute(end) {
+    if (!userCurrentLocation) {
+        // to do throw warning to enable location 
+        return;
+    }
+    const origin = new google.maps.LatLng(userCurrentLocation.lat, userCurrentLocation.lng);
+    const destination = new google.maps.LatLng(end.lat, end.lng);
+
+    // to do clear other markers off the map
+
+    directionsService
+        .route({
+            origin,
+            destination,
+            travelMode: google.maps.TravelMode.DRIVING,
+        })
+        .then((response) => {
+            directionsRenderer.setDirections(response);
+        })
+        .catch((e) => window.alert("Directions request failed due to " + e));
+}
+
+// directions button listenet
+$("#map").on("click", ".directionsButton", event => {
+    if ($(event.target).is("button")) {
+        var destination = { lat: $(event.target).attr('data-lat'), lng: $(event.target).attr('data-lng') };
+        // var index = $(event.target).attr('data-index');
+        // to do display destination name on info window
+        // make sure getting user location works properly and on time and error if not
+        if (!userCurrentLocation || !userCurrentLocation.navigator) {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, true: navigator };
+                });
+            }
+        }
+        calculateAndDisplayRoute(destination)
+    } else {
+        // nothing 
+    }
+});
 
 // ******* END ***********
 // ******* OF ***********
