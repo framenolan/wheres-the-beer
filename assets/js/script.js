@@ -8,9 +8,15 @@ function validateEntry(e) {
     } else if (/^\d+$/.test(e)) { //regex to check if string is only numbers
         if (e.length === 5) {
             // all number and 5 digit, use getByPostal
-            geocode(e).then(function (coord) {
-                getByCoord(coord);
-            });
+
+            // check local storage for geocode
+            let storedGeocode = JSON.parse(localStorage.getItem(`geocode-${e}`));
+            if (storedGeocode) {
+                getByCoord(storedGeocode)
+            } else {
+                geocode(e)
+                    .then(coord => getByCoord(coord));
+            }
             //getByCoord(coord);
         } else {
             console.log("wrong number digit for zipcode");
@@ -25,9 +31,15 @@ function validateEntry(e) {
         if (/^[A-Za-z\s]*$/.test(eArray[0]) && /^[A-Za-z\s]*$/.test(eArray[1])) { //regex to check if string is letters and spaces only
             eArray[0] = eArray[0].split(" ").join("%20");
             e = eArray.join("+");
-            geocode(e).then(function (coord) {
-                getByCoord(coord);
-            });
+
+            // check local storage for geocode
+            let storedGeocode = JSON.parse(localStorage.getItem(`geocode-${e}`));
+            if (storedGeocode) {
+                getByCoord(storedGeocode)
+            } else {
+                geocode(e)
+                    .then(coord => getByCoord(coord));
+            }
         } else {
             $("#searchResults").empty();
             $("#searchResults").append($(`<div class="box">Enter City, State</div>`));
@@ -89,6 +101,8 @@ function geocode(location) {
         .then(res => {
             if (res && res.results && res.results.length) {
                 currentLocation = res.results[0].geometry.location;
+                // setting local storage
+                localStorage.setItem(`geocode-${location}`, JSON.stringify(res.results[0].geometry.location));
                 return res.results[0].geometry.location;
             } else {
                 Promise.reject(res);
