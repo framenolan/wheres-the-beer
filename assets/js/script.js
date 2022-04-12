@@ -121,14 +121,21 @@ function showResults(data) {
     } else {
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
-            if (data[i].website_url) {
-                brewBox.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].name}</a>`));
-            } else {
+            if (data[i].name) {
                 brewBox.append($(`<h1>${data[i].name}</h1>`));
             }
-            brewBox.append($(`<p>${data[i].street}</p>`));
-            brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
-            brewBox.append($(`<p>${data[i].phone}</p>`));
+            if (data[i].street) {
+                brewBox.append($(`<p>${data[i].street}</p>`));
+            }
+            if (data[i].city && data[i].state && data[i].postal_code) {
+                brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
+            }
+            if (data[i].phone) {
+                brewBox.append($(`<p>${data[i].phone}</p>`));
+            }
+            if (data[i].website_url) {
+                brewBox.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].website_url}</a>`));
+            }
             $("#searchResults").append(brewBox);
         }
         updateMap(currentLocation, data);
@@ -208,22 +215,13 @@ function updateMap(center, results) {
     previousListItemIndex = null;
 }
 
-// gets user location
-function getUserLocation() {
-    return fetch('https://ipapi.co/json')
-        .then(res => res.json())
-        .then(res => userCurrentLocation = { lat: res.latitude, lng: res.longitude })
-        .catch(err => console.log("err: ", err));
-}
-
-getUserLocation()
-
 // display directions and draw route
 function calculateAndDisplayRoute(end) {
-    if (!userCurrentLocation) {
-        // to do throw warning to enable location 
-        return;
-    }
+    // if (!userCurrentLocation) {
+    //     // to do throw warning to enable location 
+    //     console.log("no location");
+    //     return;
+    // }
     const origin = new google.maps.LatLng(userCurrentLocation.lat, userCurrentLocation.lng);
     const destination = new google.maps.LatLng(end.lat, end.lng);
 
@@ -248,14 +246,16 @@ $("#map").on("click", ".directionsButton", event => {
         // var index = $(event.target).attr('data-index');
         // to do display destination name on info window
         // make sure getting user location works properly and on time and error if not
-        if (!userCurrentLocation || !userCurrentLocation.navigator) {
+        if (!userCurrentLocation) {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, true: navigator };
+                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude};
+                    calculateAndDisplayRoute(destination);
                 });
             }
+        } else {
+            calculateAndDisplayRoute(destination);
         }
-        calculateAndDisplayRoute(destination)
     } else {
         // nothing 
     }

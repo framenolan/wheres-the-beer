@@ -14,13 +14,12 @@ nav {
 
 .sidebar {
     background-color: crimson;
-    max-height: 80vh;
-    overflow-y: scroll;
+    height: 60vh;
 }
 
-.search-results {
-    max-height: 400px;
-    overflow-y: auto;
+.scrollbar {
+    max-height: 45vh;
+    overflow-y: scroll;
 }
 
 .bg-obvs {
@@ -32,8 +31,30 @@ nav {
     padding-bottom: 0;
 }
 
-@media screen and (min-width: 769px) {
+@media screen and (max-width: 768px) {
     .hero-body {
         padding: 1rem 3rem !important;
+    }
+
+    #mapColumn {
+        height: 40vh;
+        width: 100vw;
+        padding: 0;
+    }
+
+    .section {
+        padding: 0;
+    }
+
+    .sidebar {
+        max-height: 35vh;
+    }
+
+    .scrollbar {
+        max-height: 15vh;
+    }
+
+    .search-results {
+        max-height: 20vh;
     }
 }
