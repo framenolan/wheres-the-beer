@@ -54,36 +54,3 @@ nav {
         padding: 1rem 3rem !important;
     }
 }
-
-/* 
-Bugs
-    map doesn't center on search in seattle
-    search result card turns red on click
-        should center/zoom on result on click
-        change curser to clickable on hover?
-    phone number should be a callable link? or at least in phone format?
-        Nolan
-    Get Directions button should be prettier
-        The whole popup could be prettier
-        need to be able to remove directions
-
-    map height needs a max
-    remove max height/overflow from sidebar
-    add margin-right to search results
-    Brewery Website should be it's own line, not linked in the brewery title
-        Nolan
-    on marker click, map recenters to search results, should zoom-center on marker
-    Map component gets lost with directions out on a small screen
-        Chuan
-
-    change search box text to be shorter
-    Sort search results? By what?
-        Alphabetically
-    Directions needs a scroll bar?
-        Should we move the directions to their own component on the page?
-        Add a functionality to send directions to phone?
-        Maybe on Display Directions, the search feature disappears
-
-
-    if no Lat/Lon, remove from results? Search by address?
-*/
