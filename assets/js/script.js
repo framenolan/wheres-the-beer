@@ -87,7 +87,7 @@ function getByName(name) {
             showResults(data);
         })
         .catch(function (error) {
-            console.long('get by name error')
+            console.log('get by name error')
         })
 }
 
@@ -114,11 +114,30 @@ function geocode(location) {
         });
 }
 
+// Validation based on brewery type and if lat/lon are empty, removes if brewery not valid
+function checkTypeLatLng(data) {
+    for (let i = 0; i < data.length; i++) {
+        let breweryType = data[i].brewery_type
+        let breweryLat = data[i].latitude
+        let breweryLng = data[i].longitude
+
+        if (breweryType == "closed" || breweryType == "planning") {
+            data.splice(i,1);
+        } else if (!breweryLat || !breweryLng) {
+            data.splice(i,1);
+        }
+    }
+}
+
 function showResults(data) {
+    
     $("#searchResults").empty();
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
+        console.log(data)
+        checkTypeLatLng(data);
+        console.log(data)
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
             if (data[i].name) {
@@ -140,6 +159,11 @@ function showResults(data) {
         }
         updateMap(currentLocation, data);
     }
+}
+
+// Prints search term to top of search results
+function printSearchTerm(searchTerm) {
+    $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium">Results for "${searchTerm}"</p>`));
 }
 
 // ******* MAP ***********
@@ -268,5 +292,6 @@ $("#map").on("click", ".directionsButton", event => {
 $("#searchBtn").on('click', function (event) {
     event.preventDefault();
     validateEntry($("#searchInput").val());
+    printSearchTerm($("#searchInput").val());
     $("#searchInput").val("");
 });

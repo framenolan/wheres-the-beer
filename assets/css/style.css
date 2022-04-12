@@ -3,6 +3,20 @@
     min-height: 100vh;
 } */
 
+:root {
+    --sidebarbg: crimson;
+    --obvsbg: salmon;
+
+}
+
+.shown {
+    display: show;
+}
+
+.hidden {
+    display: none;
+}
+
 nav {
     padding-left: 10px;
     padding-right: 10px;
@@ -13,17 +27,21 @@ nav {
 }
 
 .sidebar {
-    background-color: crimson;
-    height: 60vh;
+    background-color: var(--sidebarbg);
 }
 
-.scrollbar {
-    max-height: 45vh;
-    overflow-y: scroll;
+.search-results {
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.result {
+    cursor: pointer;
+    
 }
 
 .bg-obvs {
-    background-color: salmon;
+    background-color: var(--obvsbg);
 }
 
 #mapColumn {
