@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
+var currentLocation, infoWindow, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -151,13 +151,20 @@ $("#searchResults").on("click", ".box", event => {
 
 function markerToggleListItem(i) {
     // to do scorll to this maybe expand, add class, make sure to remove previous one
-    $(`#idx-${i}`).css("backgroundColor", "red");
-    // change the styling of the previously clicked list item back by removing the class or whatever
-    // do the opposite here of what we did above
-    if (previousListItemIndex !== null) {
+    if (previousListItemIndex == i) {
         $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        infoWindow.close();
+        previousListItemIndex = null;
+    } else {
+        $("#searchResults").scrollTo(`#idx-${i}`);
+        $(`#idx-${i}`).css("backgroundColor", "red");
+        // change the styling of the previously clicked list item back by removing the class or whatever
+        // do the opposite here of what we did above
+        if (previousListItemIndex !== null) {
+            $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        }
+        previousListItemIndex = i;
     }
-    previousListItemIndex = i;
 }
 
 // center ({lat: lat, lng: lng}) results array of brewery objects
@@ -170,8 +177,8 @@ function updateMap(center, results) {
 
     directionsRenderer = new google.maps.DirectionsRenderer();
     directionsService = new google.maps.DirectionsService();
+    infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
     let map = new google.maps.Map(document.querySelector("#map"), { center, disableDefaultUI: true });
-    let infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
     let bounds = new google.maps.LatLngBounds();
 
     directionsRenderer.setMap(map);
@@ -204,6 +211,10 @@ function updateMap(center, results) {
         });
         markers.push(marker);
     }
+    infoWindow.addListener("closeclick", (event) => {
+        $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        previousListItemIndex = null;
+    });
     previousListItemIndex = null;
 }
 
@@ -249,6 +260,14 @@ $("#map").on("click", ".directionsButton", event => {
         // nothing 
     }
 });
+
+// list scroll function on marker or item click
+jQuery.fn.scrollTo = function (elem, speed) {
+    $(this).animate({
+        scrollTop: $(this).scrollTop() - $(this).offset().top + $(elem).offset().top
+    }, speed == undefined ? 1000 : speed);
+    return this;
+};
 
 // ******* END ***********
 // ******* OF ***********
