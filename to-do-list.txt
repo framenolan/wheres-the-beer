@@ -1,5 +1,6 @@
 BREWERY API SITE: https://www.openbrewerydb.org/
 github: https://github.com/framenolan/wheres-the-beer
+deployment: https://framenolan.github.io/wheres-the-beer/
 
 ~ ~ ~ MVP ~ ~ ~
 
