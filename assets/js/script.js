@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, markers = [], previousListItemIndex = null;
+var currentLocation, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -130,8 +130,10 @@ function showResults(data) {
 // either way markerToggleListItem will be called so all styling and dynamic changes only need to be there
 // it's the next function below
 $("#searchResults").on("click", ".box", event => {
-    var index = $(event.target).is("div") ? $(event.target).attr('data-index') : $(event.target).parent('div').attr('data-index');
-    google.maps.event.trigger(markers[index], 'click');
+    if (markers.length) {
+        var index = $(event.target).is("div") ? $(event.target).attr('data-index') : $(event.target).parent('div').attr('data-index');
+        google.maps.event.trigger(markers[index], 'click');
+    }
 });
 
 function markerToggleListItem(i) {
@@ -153,13 +155,16 @@ function updateMap(center, results) {
         markers = [];
     }
 
-    let map = new google.maps.Map(document.querySelector("#map"), { center });
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsService = new google.maps.DirectionsService();
+    let map = new google.maps.Map(document.querySelector("#map"), { center, disableDefaultUI: true });
     let infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
     let bounds = new google.maps.LatLngBounds();
 
-    // Add markers to the map.
+    directionsRenderer.setMap(map);
+    directionsRenderer.setPanel(document.querySelector("#sidebar"));
 
-    // id="idx-${i}" data-index="${i}"
+    // Add markers to the map.
     for (let i = 0; i < results.length; i++) {
         var position = new google.maps.LatLng(results[i].latitude, results[i].longitude);
         bounds.extend(position);
@@ -176,16 +181,71 @@ function updateMap(center, results) {
         map.fitBounds(bounds);
         // open info window when marker is clicked
         marker.addListener("click", (event) => {
-            infoWindow.setContent(results[i].name);
+            infoWindow.setContent(`
+                <h3>${results[i].name}</h3>
+                <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
+            `);
             infoWindow.open(map, marker);
             map.panTo(position);
             markerToggleListItem(i);
         });
         markers.push(marker);
-        // google.maps.event.trigger(markers[index], 'click')
     }
     previousListItemIndex = null;
 }
+
+// gets user location
+function getUserLocation() {
+    return fetch('https://ipapi.co/json')
+        .then(res => res.json())
+        .then(res => userCurrentLocation = { lat: res.latitude, lng: res.longitude })
+        .catch(err => console.log("err: ", err));
+}
+
+getUserLocation()
+
+// display directions and draw route
+function calculateAndDisplayRoute(end) {
+    if (!userCurrentLocation) {
+        // to do throw warning to enable location 
+        return;
+    }
+    const origin = new google.maps.LatLng(userCurrentLocation.lat, userCurrentLocation.lng);
+    const destination = new google.maps.LatLng(end.lat, end.lng);
+
+    // to do clear other markers off the map
+
+    directionsService
+        .route({
+            origin,
+            destination,
+            travelMode: google.maps.TravelMode.DRIVING,
+        })
+        .then((response) => {
+            directionsRenderer.setDirections(response);
+        })
+        .catch((e) => window.alert("Directions request failed due to " + e));
+}
+
+// directions button listenet
+$("#map").on("click", ".directionsButton", event => {
+    if ($(event.target).is("button")) {
+        var destination = { lat: $(event.target).attr('data-lat'), lng: $(event.target).attr('data-lng') };
+        // var index = $(event.target).attr('data-index');
+        // to do display destination name on info window
+        // make sure getting user location works properly and on time and error if not
+        if (!userCurrentLocation || !userCurrentLocation.navigator) {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, true: navigator };
+                });
+            }
+        }
+        calculateAndDisplayRoute(destination)
+    } else {
+        // nothing 
+    }
+});
 
 // ******* END ***********
 // ******* OF ***********
