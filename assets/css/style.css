@@ -74,6 +74,10 @@ body {
     padding-bottom: 0;
 }
 
+.main-section {
+    max-height: 650px;
+}
+
 div.show {
     display: block !important;
 }
