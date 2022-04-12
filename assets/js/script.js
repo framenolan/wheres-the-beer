@@ -122,15 +122,15 @@ function checkTypeLatLng(data) {
         let breweryLng = data[i].longitude
 
         if (breweryType == "closed" || breweryType == "planning") {
-            data.splice(i,1);
+            data.splice(i, 1);
         } else if (!breweryLat || !breweryLng) {
-            data.splice(i,1);
+            data.splice(i, 1);
         }
     }
 }
 
 function showResults(data) {
-    
+
     $("#searchResults").empty();
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));

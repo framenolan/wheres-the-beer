@@ -37,7 +37,7 @@ nav {
 
 .result {
     cursor: pointer;
-    
+
 }
 
 .bg-obvs {
@@ -52,6 +52,7 @@ nav {
 div.show {
     display: block !important;
 }
+
 div.hide {
     display: none !important;
 }
