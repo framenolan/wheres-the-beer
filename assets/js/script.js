@@ -199,24 +199,13 @@ function updateMap(center, results) {
                 <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
             `);
             infoWindow.open(map, marker);
-            // to do fix the map pan to position
-            map.panTo(position);
+            map.panTo({ lat: Number(results[i].latitude), lng: Number(results[i].longitude) });
             markerToggleListItem(i);
         });
         markers.push(marker);
     }
     previousListItemIndex = null;
 }
-
-// gets user location
-function getUserLocation() {
-    return fetch('https://ipapi.co/json')
-        .then(res => res.json())
-        .then(res => userCurrentLocation = { lat: res.latitude, lng: res.longitude })
-        .catch(err => console.log("err: ", err));
-}
-
-getUserLocation()
 
 // display directions and draw route
 function calculateAndDisplayRoute(end) {
@@ -248,7 +237,7 @@ $("#map").on("click", ".directionsButton", event => {
         // var index = $(event.target).attr('data-index');
         // to do display destination name on info window
         // make sure getting user location works properly and on time and error if not
-        if (!userCurrentLocation || !userCurrentLocation.navigator) {
+        if (!userCurrentLocation && !userCurrentLocation.navigator) {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, true: navigator };
