@@ -32,6 +32,13 @@ nav {
     padding-bottom: 0;
 }
 
+div.show {
+    display: block !important;
+}
+div.hide {
+    display: none !important;
+}
+
 @media screen and (min-width: 769px) {
     .hero-body {
         padding: 1rem 3rem !important;

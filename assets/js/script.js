@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, infoWindow, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
+var currentLocation, map, infoWindow, markers = [], bounds, previousListItemIndex = null, userCurrentLocation = { lat: 47.704150, lng: -122.208950 }, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -178,11 +178,11 @@ function updateMap(center, results) {
     directionsRenderer = new google.maps.DirectionsRenderer();
     directionsService = new google.maps.DirectionsService();
     infoWindow = new google.maps.InfoWindow({ content: "", disableAutoPan: true });
-    let map = new google.maps.Map(document.querySelector("#map"), { center, disableDefaultUI: true });
-    let bounds = new google.maps.LatLngBounds();
+    map = new google.maps.Map(document.querySelector("#map"), { center, disableDefaultUI: true });
+    bounds = new google.maps.LatLngBounds();
 
     directionsRenderer.setMap(map);
-    directionsRenderer.setPanel(document.querySelector("#sidebar"));
+    directionsRenderer.setPanel(document.querySelector("#directionsContainer"));
 
     // Add markers to the map.
     for (let i = 0; i < results.length; i++) {
@@ -220,14 +220,12 @@ function updateMap(center, results) {
 
 // display directions and draw route
 function calculateAndDisplayRoute(end) {
-    if (!userCurrentLocation) {
-        // to do throw warning to enable location 
-        return;
-    }
+    // if (!userCurrentLocation) {
+    //     // to do throw warning to enable location 
+    //     return;
+    // }
     const origin = new google.maps.LatLng(userCurrentLocation.lat, userCurrentLocation.lng);
     const destination = new google.maps.LatLng(end.lat, end.lng);
-
-    // to do clear other markers off the map
 
     directionsService
         .route({
@@ -236,22 +234,48 @@ function calculateAndDisplayRoute(end) {
             travelMode: google.maps.TravelMode.DRIVING,
         })
         .then((response) => {
+            $("#directionsContainer").html("<button id='backButton'>Back</button>");
+            $("#directionsContainer").removeClass("hide");
+            $("#directionsContainer").addClass("show");
+            $("#sidebarColumn").addClass("hide");
             directionsRenderer.setDirections(response);
         })
         .catch((e) => window.alert("Directions request failed due to " + e));
 }
 
-// directions button listenet
+// back button listener
+$("#directionsContainer").on("click", "#backButton", event => {
+    if ($(event.target).is("button")) {
+        $("#directionsContainer").removeClass("show");
+        $("#directionsContainer").addClass("hide");
+        $("#sidebarColumn").removeClass("hide");
+        markers.forEach(marker => {
+            bounds.extend(marker.position);
+            marker.setMap(map);
+            marker.setAnimation(google.maps.Animation.DROP);
+        });
+        directionsRenderer.set('directions', null);
+    }
+});
+// directions button listener
 $("#map").on("click", ".directionsButton", event => {
     if ($(event.target).is("button")) {
+        infoWindow.close();
+        $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        previousListItemIndex = null;
+
         var destination = { lat: $(event.target).attr('data-lat'), lng: $(event.target).attr('data-lng') };
+
+        markers.forEach(marker => marker.setMap(null));
+
+
         // var index = $(event.target).attr('data-index');
         // to do display destination name on info window
         // make sure getting user location works properly and on time and error if not
-        if (!userCurrentLocation && !userCurrentLocation.navigator) {
+        if (!userCurrentLocation) {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, true: navigator };
+                    userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
                 });
             }
         }
