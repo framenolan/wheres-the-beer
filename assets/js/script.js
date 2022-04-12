@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, markers = [];
+var currentLocation, markers = [], previousListItemIndex = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -107,12 +107,15 @@ function showResults(data) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
         for (let i = 0; i < data.length; i++) {
-            var brewBox = $(`<div class="box"></div>`);
-            brewBox.append($(`<h1>${data[i].name}</h1>`));
+            var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
+            if (data[i].website_url) {
+                brewBox.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].name}</a>`));
+            } else {
+                brewBox.append($(`<h1>${data[i].name}</h1>`));
+            }
             brewBox.append($(`<p>${data[i].street}</p>`));
             brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
             brewBox.append($(`<p>${data[i].phone}</p>`));
-            brewBox.append($(`<p>${data[i].website_url}</p>`));
             $("#searchResults").append(brewBox);
         }
         updateMap(currentLocation, data);
@@ -122,6 +125,25 @@ function showResults(data) {
 // ******* MAP ***********
 // ******* STUFF BELOW ***********
 // ******* HERE ***********
+
+// IMPORTANT: this event bubbling links the corresponding map markers map with list items
+// either way markerToggleListItem will be called so all styling and dynamic changes only need to be there
+// it's the next function below
+$("#searchResults").on("click", ".box", event => {
+    var index = $(event.target).is("div") ? $(event.target).attr('data-index') : $(event.target).parent('div').attr('data-index');
+    google.maps.event.trigger(markers[index], 'click');
+});
+
+function markerToggleListItem(i) {
+    // to do scorll to this maybe expand, add class, make sure to remove previous one
+    $(`#idx-${i}`).css("backgroundColor", "red");
+    // change the styling of the previously clicked list item back by removing the class or whatever
+    // do the opposite here of what we did above
+    if (previousListItemIndex !== null) {
+        $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+    }
+    previousListItemIndex = i;
+}
 
 // center ({lat: lat, lng: lng}) results array of brewery objects
 function updateMap(center, results) {
@@ -136,29 +158,33 @@ function updateMap(center, results) {
     let bounds = new google.maps.LatLngBounds();
 
     // Add markers to the map.
-    markers = results.map((brewery, i) => {
-        // var position = { lat: Number(brewery.latitude), lng: Number(brewery.longitude) }
-        var position = new google.maps.LatLng(brewery.latitude, brewery.longitude);
+
+    // id="idx-${i}" data-index="${i}"
+    for (let i = 0; i < results.length; i++) {
+        var position = new google.maps.LatLng(results[i].latitude, results[i].longitude);
         bounds.extend(position);
         const marker = new google.maps.Marker({
             position,
             map,
-            title: brewery.name,
+            title: results[i].name,
             optimized: false,
             animation: google.maps.Animation.DROP,
-            // label: brewery.name,
+            // label: results[i].name,
             // animation: google.maps.Animation.BOUNCE,
             // icon: './wittcode-marker.png',
         });
         map.fitBounds(bounds);
-
         // open info window when marker is clicked
-        marker.addListener("click", () => {
-            infoWindow.setContent(brewery.name);
+        marker.addListener("click", (event) => {
+            infoWindow.setContent(results[i].name);
             infoWindow.open(map, marker);
-            map.setCenter(position);
+            map.panTo(position);
+            markerToggleListItem(i);
         });
-    });
+        markers.push(marker);
+        // google.maps.event.trigger(markers[index], 'click')
+    }
+    previousListItemIndex = null;
 }
 
 // ******* END ***********
