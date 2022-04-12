@@ -147,7 +147,7 @@ function showResults(data) {
             }
             brewBox.append($(`<p>${data[i].street}</p>`));
             brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
-            brewBox.append($(`<p>${data[i].phone}</p>`));
+            brewBox.append($(`<a href="tel:${data[i].phone}">${data[i].phone}</a>`));
             $("#searchResults").append(brewBox);
         }
         updateMap(currentLocation, data);
@@ -156,7 +156,8 @@ function showResults(data) {
 
 // Prints search term to top of search results
 function printSearchTerm(searchTerm) {
-    $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium">Results for "${searchTerm}"</p>`));
+    $("#resultsTextDiv").empty();
+    $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium light-white">Results for "${searchTerm}"</p>`));
 }
 
 // ******* MAP ***********
@@ -181,7 +182,7 @@ function markerToggleListItem(i) {
         previousListItemIndex = null;
     } else {
         $("#searchResults").scrollTo(`#idx-${i}`);
-        $(`#idx-${i}`).css("backgroundColor", "red");
+        $(`#idx-${i}`).css("backgroundColor", "var(--colorfulaccent)");
         // change the styling of the previously clicked list item back by removing the class or whatever
         // do the opposite here of what we did above
         if (previousListItemIndex !== null) {

@@ -14,12 +14,12 @@
 
 <body>
 
-	<header class="hero is-info">
+	<header class="hero primary-bg">
 		<div class="hero-body">
-			<p class="title">
+			<p class="title colorful-text">
 				Where's the Beer?
 			</p>
-			<p class="subtitle">
+			<p class="subtitle light-white">
 				Brewery Directory
 			</p>
 		</div>
@@ -27,14 +27,14 @@
 
 	<main>
 		<section class="section">
-			<div class="columns">
+			<div class="columns main-section">
 				<div id="sidebarColumn" class="column is-p-10 sidebar">
 					<div id="searchForm" class="mb-5">
 						<form class="p-2">
-							<label for="searchInput" class="label is-medium">Search for Breweries:</label>
+							<label for="searchInput" class="label is-medium light-white">Search for Breweries:</label>
 							<input id="searchInput" class="input is-medium mb-3" type="text"
 								placeholder="Name, Zip, or City/State">
-							<button class="button is-info" id="searchBtn">Search</button>
+							<button class="button neutral-btn" id="searchBtn">Search</button>
 						</form>
 						<div class="content" id="resultsTextDiv">
 							<p id="resultsText">
@@ -55,14 +55,18 @@
 			</div>
 		</section>
 
-		<section class="section bg-obvs">
-			Yelp reviews here
+		<section class="section columns colorful-bg">
+			<div class="column is-1"></div>
+			<div class="column is-10 is-centered">
+				Yelp reviews here
+			</div>
+			<div class="column is-1"></div>
 		</section>
 
-		<section class="section">
+		<section class="section p-3">
 			<div class="columns">
-				<div class="column is-one-quarter"></div>
-				<div id="collage" class="column is-three-quarters">
+				<!-- <div class="column is-one-quarter"></div> -->
+				<div id="collage" class="column neutral-bg">
 					Collage of photos here
 				</div>
 			</div>
