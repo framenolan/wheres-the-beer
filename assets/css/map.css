@@ -3,7 +3,7 @@
     display: flex;
 }
 
-#sidebar {
+#directionsContainer {
     flex-basis: 15rem;
     flex-grow: 1;
     padding: 1rem;
@@ -53,11 +53,17 @@
     flex: auto;
 }
 
-#sidebar {
+#directionsContainer {
     flex: 0 1 auto;
     padding: 0;
+    max-height: 80vh;
+    overflow-y: scroll;
 }
 
-#sidebar>div {
+#directionsContainer>div {
     padding: 0.5rem;
+}
+
+.adp-legal {
+    display: none !important;
 }

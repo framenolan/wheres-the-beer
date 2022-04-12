@@ -37,7 +37,7 @@ nav {
 
 .result {
     cursor: pointer;
-    
+
 }
 
 .bg-obvs {
@@ -47,6 +47,14 @@ nav {
 #mapColumn {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+div.show {
+    display: block !important;
+}
+
+div.hide {
+    display: none !important;
 }
 
 @media screen and (min-width: 769px) {
