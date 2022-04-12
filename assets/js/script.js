@@ -17,7 +17,6 @@ function validateEntry(e) {
                 geocode(e)
                     .then(coord => getByCoord(coord));
             }
-            //getByCoord(coord);
         } else {
             console.log("wrong number digit for zipcode");
         }
@@ -200,6 +199,7 @@ function updateMap(center, results) {
                 <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
             `);
             infoWindow.open(map, marker);
+            // to do fix the map pan to position
             map.panTo(position);
             markerToggleListItem(i);
         });
