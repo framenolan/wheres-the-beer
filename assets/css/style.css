@@ -74,12 +74,12 @@ body {
     padding-bottom: 0;
 }
 
-.main-section {
-    max-height: 650px;
+div.show {
+    display: block !important;
 }
 
-.map-container {
-    max-height: 100%;
+div.hide {
+    display: none !important;
 }
 
 @media screen and (min-width: 769px) {
