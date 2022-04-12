@@ -114,6 +114,21 @@ function geocode(location) {
         });
 }
 
+// Validation based on brewery type and if lat/lon are empty, removes if brewery not valid
+function checkTypeLatLng(data) {
+    for (let i = 0; i < data.length; i++) {
+        let breweryType = data[i].brewery_type
+        let breweryLat = data[i].latitude
+        let breweryLng = data[i].longitude
+
+        if (breweryType == "closed" || breweryType == "planning") {
+            data.splice(i,1);
+        } else if (!breweryLat || !breweryLng) {
+            data.splice(i,1);
+        }
+    }
+}
+
 function showResults(data) {
     
     $("#searchResults").empty();
@@ -136,21 +151,6 @@ function showResults(data) {
             $("#searchResults").append(brewBox);
         }
         updateMap(currentLocation, data);
-    }
-}
-
-// Validation based on brewery type and if lat/lon are empty, removes if brewery not valid
-function checkTypeLatLng(data) {
-    for (let i = 0; i < data.length; i++) {
-        let breweryType = data[i].brewery_type
-        let breweryLat = data[i].latitude
-        let breweryLng = data[i].longitude
-
-        if (breweryType == "closed" || breweryType == "planning") {
-            data.splice(i,1);
-        } else if (!breweryLat || !breweryLng) {
-            data.splice(i,1);
-        }
     }
 }
 
