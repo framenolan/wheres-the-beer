@@ -6,18 +6,16 @@
     --lightwhite: #FAFAFF;
 }
 
+
 body {
     background-color: var(--lightwhite);
     min-height: 100vh;
 }
 
-/* .shown {
-    display: show;
+.form-box {
+    margin-top: -1.5em;
+    margin-bottom: 1em;
 }
-
-.hidden {
-    display: none;
-} */
 
 .primary-bg {
     background-color: var(--primarybg);
@@ -86,8 +84,30 @@ div.hide {
     display: none !important;
 }
 
-@media screen and (min-width: 769px) {
+@media screen and (max-width: 768px) {
     .hero-body {
         padding: 1rem 3rem !important;
+    }
+
+    #mapColumn {
+        height: 40vh;
+        width: 100vw;
+        padding: 0;
+    }
+
+    .section {
+        padding: 0;
+    }
+
+    .sidebar {
+        max-height: 35vh;
+    }
+
+    .scrollbar {
+        max-height: 15vh;
+    }
+
+    .search-results {
+        max-height: 20vh;
     }
 }
