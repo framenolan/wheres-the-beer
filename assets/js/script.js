@@ -1,6 +1,6 @@
 "use strict";
 
-var searchArea, autocomplete, map, infoWindow, cacheData, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null;
+var searchArea, autocomplete, map, infoWindow, cacheData = null, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null, showingFav = false;
 var userCurrentLocation = { lat: null, lng: null, useCur: false };
 
 function validateEntry(e) {
@@ -66,8 +66,7 @@ function getByCoord(coord) {
             return response.json();
         })
         .then(function (data) {
-            console.log("data ", data)
-            showResults(data);
+            showResults(data, false);
         })
         .catch(function (error) {
             console.log('getByCoord error ', error);
@@ -85,7 +84,7 @@ function getByName(name) {
             return response.json();
         })
         .then(function (data) {
-            showResults(data);
+            showResults(data, false);
         })
         .catch(function (error) {
             console.log('get by name error')
@@ -117,6 +116,7 @@ function geocode(location) {
 
 // Validation based on brewery type and if lat/lon are empty, removes if brewery not valid
 function checkTypeLatLng(data) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
     for (let i = 0; i < data.length; i++) {
         let breweryType = data[i].brewery_type
         let breweryLat = data[i].latitude
@@ -127,23 +127,47 @@ function checkTypeLatLng(data) {
         } else if (!breweryLat || !breweryLng) {
             data.splice(i, 1);
         }
+
+        // give a boolean to show if something is favorited
+        for (let j = 0; j < favArray.length; j++) {
+            if (data[i].id === favArray[j].id) {
+                data[i].isFav = true;
+                j = favArray.length;
+            }
+        }
     }
     cacheData = data;
     return data;
 }
 
-function showResults(data) {
+function showResults(data, checked) {
     $("#searchResults").empty();
-    if (data.length === 0) {
+    if (!data) {
+        $("#searchResults").append($(`<div class="box">No Results</div>`));
+    }
+    else if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
-        data = checkTypeLatLng(data);
+        if (!checked) {
+            data = checkTypeLatLng(data);
+        }
+        // filter out non fav if showing favorites only
+        if (showingFav) {
+            data = [];
+            for (let i = 0; i < cacheData.length; i++) {
+                if (cacheData[i].isFav) {
+                    data.push(cacheData[i]);
+                }
+            }
+        }
+        // loop thru data and populate html
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
-            if (data[i].name) {
+            if (data[i].isFav) {
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">💛</a></h1>`));
+            } else {
                 brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
             }
-
             var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
             if (data[i].street) {
                 hidden.append($(`<p>${data[i].street}</p>`));
@@ -176,7 +200,7 @@ function saveFav(fav) {
     } else {
         //check if fav already exists in favArray
         var exists = false;
-        for (let i=0; i < favArray.length; i++) {
+        for (let i = 0; i < favArray.length; i++) {
             if (favArray[i].id === fav.id) {
                 exists = true;
                 i = favArray.length;
@@ -195,7 +219,7 @@ function saveFav(fav) {
 function delFav(fav) {
     var favArray = JSON.parse(localStorage.getItem("favBrews"));
     if (favArray) {
-        for (let i=0; i < favArray.length; i++) {
+        for (let i = 0; i < favArray.length; i++) {
             if (favArray[i].id === fav.id) {
                 favArray.splice(i, 1);
             }
@@ -209,12 +233,33 @@ function delFav(fav) {
 $("#searchResults").on("click", "a", event => {
     event.preventDefault();
     var i = event.target.getAttribute('index');
-    if(event.target.textContent == "🖤") {
+    if (event.target.textContent == "🖤") {
         event.target.textContent = "💛";
+        cacheData[i].isFav = true;
         saveFav(cacheData[i]);
     } else {
         event.target.textContent = "🖤";
+        cacheData[i].isFav = false;
         delFav(cacheData[i]);
+    }
+});
+
+// show favorites
+$("#showFavBtn").on("click", event => {
+    event.preventDefault();
+    if (showingFav) {
+        showingFav = false;
+        event.target.style.backgroundColor = 'gray';
+        showResults(cacheData, false);
+    } else {
+        showingFav = true;
+        event.target.style.backgroundColor = 'yellow';
+        if (!cacheData) {
+            var favArray = JSON.parse(localStorage.getItem("favBrews"));
+            showResults(favArray, true);
+        } else {
+            showResults(cacheData, true);
+        }
     }
 });
 
@@ -425,7 +470,6 @@ $("#map").on("click", ".directionsButton", event => {
         // make sure getting user location works properly and on time and error if not
         if (!userCurrentLocation) {
             if ('geolocation' in navigator) {
-                console.log("geo")
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
                     calculateAndDisplayRoute(userCurrentLocation, destination);
