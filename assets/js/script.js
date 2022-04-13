@@ -1,6 +1,6 @@
 "use strict";
 
-var searchArea, autocomplete, map, infoWindow, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null;
+var searchArea, autocomplete, map, infoWindow, cacheData = null, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null, showingFav = false;
 var userCurrentLocation = { lat: null, lng: null, useCur: false };
 
 function validateEntry(e) {
@@ -66,8 +66,7 @@ function getByCoord(coord) {
             return response.json();
         })
         .then(function (data) {
-            console.log("data ", data)
-            showResults(data);
+            showResults(data, false);
         })
         .catch(function (error) {
             console.log('getByCoord error ', error);
@@ -85,7 +84,7 @@ function getByName(name) {
             return response.json();
         })
         .then(function (data) {
-            showResults(data);
+            showResults(data, false);
         })
         .catch(function (error) {
             console.log('get by name error')
@@ -117,6 +116,7 @@ function geocode(location) {
 
 // Validation based on brewery type and if lat/lon are empty, removes if brewery not valid
 function checkTypeLatLng(data) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
     for (let i = 0; i < data.length; i++) {
         let breweryType = data[i].brewery_type
         let breweryLat = data[i].latitude
@@ -127,11 +127,20 @@ function checkTypeLatLng(data) {
         } else if (!breweryLat || !breweryLng) {
             data.splice(i, 1);
         }
+
+        // give a boolean to show if something is favorited
+        for (let j = 0; j < favArray.length; j++) {
+            if (data[i].id === favArray[j].id) {
+                data[i].isFav = true;
+                j = favArray.length;
+            }
+        }
     }
+    cacheData = data;
     return data;
 }
 
-function showResults(data) {
+function showResults(data, checked) {
     $("#searchResults").empty();
     $('html, body').animate({
         scrollTop: $('#map').offset().top - 10
@@ -139,15 +148,26 @@ function showResults(data) {
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
-        console.log(data)
-        data = checkTypeLatLng(data);
-        console.log(data)
+        if (!checked) {
+            data = checkTypeLatLng(data);
+        }
+        // filter out non fav if showing favorites only
+        if (showingFav && cacheData) {
+            data = [];
+            for (let i = 0; i < cacheData.length; i++) {
+                if (cacheData[i].isFav) {
+                    data.push(cacheData[i]);
+                }
+            }
+        }
+        // loop thru data and populate html
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
-            if (data[i].name) {
-                brewBox.append($(`<h1>${data[i].name}</h1>`));
+            if (data[i].isFav) {
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">💛</a></h1>`));
+            } else {
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
             }
-
             var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
             if (data[i].street) {
                 hidden.append($(`<p>${data[i].street}</p>`));
@@ -171,6 +191,78 @@ function showResults(data) {
     }
 }
 
+//helper function to save favorites
+function saveFav(fav) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
+    if (!favArray) {
+        //create new if no array
+        favArray = [fav];
+    } else {
+        //check if fav already exists in favArray
+        var exists = false;
+        for (let i = 0; i < favArray.length; i++) {
+            if (favArray[i].id === fav.id) {
+                exists = true;
+                i = favArray.length;
+            }
+        }
+        //push to array if don't exists in there already
+        if (!exists) {
+            favArray.push(fav);
+        }
+    }
+    // update local storage
+    localStorage.setItem("favBrews", JSON.stringify(favArray));
+}
+
+//helper function to delete favorites
+function delFav(fav) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
+    if (favArray) {
+        for (let i = 0; i < favArray.length; i++) {
+            if (favArray[i].id === fav.id) {
+                favArray.splice(i, 1);
+            }
+        }
+    }
+    // update local storage
+    localStorage.setItem("favBrews", JSON.stringify(favArray));
+}
+
+// favoring items
+$("#searchResults").on("click", "a", event => {
+    event.preventDefault();
+    var i = event.target.getAttribute('index');
+    if (event.target.textContent == "🖤") {
+        event.target.textContent = "💛";
+        cacheData[i].isFav = true;
+        saveFav(cacheData[i]);
+    } else if (event.target.textContent == "💛"){
+        event.target.textContent = "🖤";
+        cacheData[i].isFav = false;
+        delFav(cacheData[i]);
+    }
+});
+
+// show favorites
+$("#showFavBtn").on("click", event => {
+    event.preventDefault();
+    if (showingFav) {
+        showingFav = false;
+        event.target.style.backgroundColor = 'gray';
+        showResults(cacheData, false);
+    } else {
+        showingFav = true;
+        event.target.style.backgroundColor = 'yellow';
+        if (!cacheData) {
+            var favArray = JSON.parse(localStorage.getItem("favBrews"));
+            showResults(favArray, true);
+        } else {
+            showResults(cacheData, true);
+        }
+    }
+});
+
 // $("#searchResults").on("click", "#searchResults input[type=text]", function() {
 //     var currentInp = $(this).attr("id");
 //     console.log("clicked")
@@ -192,13 +284,13 @@ function printSearchTerm(searchTerm) {
 $("#searchResults").on("click", ":submit", event => {
     event.preventDefault();
     var place = autocomplete.getPlace();
+    var i = event.target.getAttribute('index');
+    $(`#search-${i}`).val("");
     if (place) {
         var start = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
-        var i = event.target.getAttribute('index');
         var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
         calculateAndDisplayRoute(start, destination);
     } else if (userCurrentLocation.useCur) {
-        var i = event.target.getAttribute('index');
         var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
         calculateAndDisplayRoute(userCurrentLocation, destination);
     }
@@ -214,12 +306,16 @@ $("#searchResults").on("click", ":button", event => {
                 var i = event.target.getAttribute('index');
                 $(`#search-${i}`).attr("placeholder", "Using Current Location");
                 $(`#search-${i}`).val("");
+                var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
+                calculateAndDisplayRoute(userCurrentLocation, destination);
             });
         }
     } else if (userCurrentLocation.useCur) {
         var i = event.target.getAttribute('index');
         $(`#search-${i}`).attr("placeholder", "Using Current Location");
         $(`#search-${i}`).val("");
+        var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
+        calculateAndDisplayRoute(userCurrentLocation, destination);
     }
 });
 
@@ -301,8 +397,9 @@ function updateMap(center, results) {
         // open info window when marker is clicked
         marker.addListener("click", (event) => {
             infoWindow.setContent(`
-                <h3>${results[i].name}</h3>
-                <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
+                <h3 id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}">${results[i].name}</h3>
+                <h3>${results[i].street}</h3>
+                <h3>${results[i].city}, ${results[i].state} ${results[i].postal_code}</h3>
             `);
             infoWindow.open(map, marker);
             map.panTo({ lat: Number(results[i].latitude), lng: Number(results[i].longitude) });
@@ -351,6 +448,9 @@ function calculateAndDisplayRoute(start, end) {
 // back button listener
 $("#directionsContainer").on("click", "#backButton", event => {
     if ($(event.target).is("button")) {
+        // reset autocomplete on back
+        autocomplete = new google.maps.places.Autocomplete(document.getElementsByClassName('pac-target-input')[0]);
+
         $("#directionsContainer").removeClass("show");
         $("#directionsContainer").addClass("hide");
         $("#sidebarColumn").removeClass("hide");
@@ -374,7 +474,6 @@ $("#map").on("click", ".directionsButton", event => {
         // make sure getting user location works properly and on time and error if not
         if (!userCurrentLocation) {
             if ('geolocation' in navigator) {
-                console.log("geo")
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
                     calculateAndDisplayRoute(userCurrentLocation, destination);
