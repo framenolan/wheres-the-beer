@@ -1,6 +1,6 @@
 "use strict";
 
-var searchArea, autocomplete, map, infoWindow, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null;
+var searchArea, autocomplete, map, infoWindow, cacheData, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null;
 var userCurrentLocation = { lat: null, lng: null, useCur: false };
 
 function validateEntry(e) {
@@ -128,6 +128,7 @@ function checkTypeLatLng(data) {
             data.splice(i, 1);
         }
     }
+    cacheData = data;
     return data;
 }
 
@@ -136,13 +137,11 @@ function showResults(data) {
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
-        console.log(data)
         data = checkTypeLatLng(data);
-        console.log(data)
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
             if (data[i].name) {
-                brewBox.append($(`<h1>${data[i].name}</h1>`));
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
             }
 
             var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
@@ -167,6 +166,57 @@ function showResults(data) {
         updateMap(searchArea, data);
     }
 }
+
+//helper function to save favorites
+function saveFav(fav) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
+    if (!favArray) {
+        //create new if no array
+        favArray = [fav];
+    } else {
+        //check if fav already exists in favArray
+        var exists = false;
+        for (let i=0; i < favArray.length; i++) {
+            if (favArray[i].id === fav.id) {
+                exists = true;
+                i = favArray.length;
+            }
+        }
+        //push to array if don't exists in there already
+        if (!exists) {
+            favArray.push(fav);
+        }
+    }
+    // update local storage
+    localStorage.setItem("favBrews", JSON.stringify(favArray));
+}
+
+//helper function to delete favorites
+function delFav(fav) {
+    var favArray = JSON.parse(localStorage.getItem("favBrews"));
+    if (favArray) {
+        for (let i=0; i < favArray.length; i++) {
+            if (favArray[i].id === fav.id) {
+                favArray.splice(i, 1);
+            }
+        }
+    }
+    // update local storage
+    localStorage.setItem("favBrews", JSON.stringify(favArray));
+}
+
+// favoring items
+$("#searchResults").on("click", "a", event => {
+    event.preventDefault();
+    var i = event.target.getAttribute('index');
+    if(event.target.textContent == "🖤") {
+        event.target.textContent = "💛";
+        saveFav(cacheData[i]);
+    } else {
+        event.target.textContent = "🖤";
+        delFav(cacheData[i]);
+    }
+});
 
 // $("#searchResults").on("click", "#searchResults input[type=text]", function() {
 //     var currentInp = $(this).attr("id");
