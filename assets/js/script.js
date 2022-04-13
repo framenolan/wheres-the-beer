@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
+var currentLocation, currentText, markers = [], previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -230,12 +230,19 @@ function updateMap(center, results) {
                 <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
             `);
             infoWindow.open(map, marker);
+            //var input = $(this).parent().find(".address");
+            // var input = document.getElementById('address');
+            // console.log(input);
+            // var autocomplete = new google.maps.places.Autocomplete(input);
+            //autocomplete.setTypes(['address']);
             // to do fix the map pan to position
             map.panTo(position);
             markerToggleListItem(i);
         });
         markers.push(marker);
     }
+    
+    
     previousListItemIndex = null;
 }
 
