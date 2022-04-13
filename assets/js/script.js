@@ -239,13 +239,13 @@ function printSearchTerm(searchTerm) {
 $("#searchResults").on("click", ":submit", event => {
     event.preventDefault();
     var place = autocomplete.getPlace();
+    var i = event.target.getAttribute('index');
+    $(`#search-${i}`).val("");
     if (place) {
         var start = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
-        var i = event.target.getAttribute('index');
         var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
         calculateAndDisplayRoute(start, destination);
     } else if (userCurrentLocation.useCur) {
-        var i = event.target.getAttribute('index');
         var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
         calculateAndDisplayRoute(userCurrentLocation, destination);
     }
