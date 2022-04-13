@@ -187,10 +187,12 @@ function printSearchTerm(searchTerm) {
 $("#searchResults").on("click", ":submit", event => {
     event.preventDefault();
     var place = autocomplete.getPlace();
-    var start = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
-    var i = event.target.getAttribute('index');
-    var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng')};
-    calculateAndDisplayRoute(start, destination);
+    if (place) {
+        var start = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+        var i = event.target.getAttribute('index');
+        var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng')};
+        calculateAndDisplayRoute(start, destination);
+    }
 });
 
 // IMPORTANT: this event bubbling links the corresponding map markers map with list items
@@ -276,6 +278,8 @@ function updateMap(center, results) {
     }
     infoWindow.addListener("closeclick", (event) => {
         $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        $(`#hidden-${previousListItemIndex}`).hide();
+        $(`#form-${previousListItemIndex}`).hide();
         previousListItemIndex = null;
     });
     previousListItemIndex = null;
@@ -289,6 +293,7 @@ function calculateAndDisplayRoute(start, end) {
     // }
     const origin = new google.maps.LatLng(start.lat, start.lng);
     const destination = new google.maps.LatLng(end.lat, end.lng);
+    markers.forEach(marker => marker.setMap(null));
 
     directionsService
         .route({
@@ -325,11 +330,13 @@ $("#map").on("click", ".directionsButton", event => {
     if ($(event.target).is("button")) {
         infoWindow.close();
         $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        $(`#hidden-${previousListItemIndex}`).hide();
+        $(`#form-${previousListItemIndex}`).hide();
         previousListItemIndex = null;
 
         var destination = { lat: $(event.target).attr('data-lat'), lng: $(event.target).attr('data-lng') };
 
-        markers.forEach(marker => marker.setMap(null));
+        //markers.forEach(marker => marker.setMap(null));
 
 
         // var index = $(event.target).attr('data-index');
@@ -337,12 +344,17 @@ $("#map").on("click", ".directionsButton", event => {
         // make sure getting user location works properly and on time and error if not
         if (!userCurrentLocation) {
             if ('geolocation' in navigator) {
+                console.log ("geo")
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
                     calculateAndDisplayRoute(userCurrentLocation, destination);
                 });
             } else {
                 // no user location and user denied location access
+                // console.log(previousListItemIndex)
+                // if (previousListItemIndex) {
+                //     markerToggleListItem(previousListItemIndex);
+                // }
             }
         } else {
             calculateAndDisplayRoute(userCurrentLocation, destination);
