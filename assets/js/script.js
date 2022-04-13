@@ -160,7 +160,7 @@ function showResults(data) {
             brewBox.append(hidden);
 
             $("#searchResults").append(brewBox);
-            $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" size="30"></input><input type="submit" index="${i}" value="Directions From"></form>`));
+            $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" placeholder="Enter a From location" class="input is-normal mt-1"></input><input type="submit" index="${i}" class="button neutral-btn mt-1" value="Directions From"></form>`));
         }
         updateMap(currentLocation, data);
     }
@@ -297,7 +297,7 @@ function calculateAndDisplayRoute(start, end) {
             travelMode: google.maps.TravelMode.DRIVING,
         })
         .then((response) => {
-            $("#directionsContainer").html("<button id='backButton'>Back</button>");
+            $("#directionsContainer").html("<button id='backButton' class='button neutral-btn'>Back</button>");
             $("#directionsContainer").removeClass("hide");
             $("#directionsContainer").addClass("show");
             $("#sidebarColumn").addClass("hide");
