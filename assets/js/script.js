@@ -152,7 +152,7 @@ function showResults(data, checked) {
             data = checkTypeLatLng(data);
         }
         // filter out non fav if showing favorites only
-        if (showingFav) {
+        if (showingFav && cacheData) {
             data = [];
             for (let i = 0; i < cacheData.length; i++) {
                 if (cacheData[i].isFav) {
@@ -237,7 +237,7 @@ $("#searchResults").on("click", "a", event => {
         event.target.textContent = "💛";
         cacheData[i].isFav = true;
         saveFav(cacheData[i]);
-    } else {
+    } else if (event.target.textContent == "💛"){
         event.target.textContent = "🖤";
         cacheData[i].isFav = false;
         delFav(cacheData[i]);
@@ -397,8 +397,9 @@ function updateMap(center, results) {
         // open info window when marker is clicked
         marker.addListener("click", (event) => {
             infoWindow.setContent(`
-                <h3>${results[i].name}</h3>
-                <button id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}" class="directionsButton">Directions</button>
+                <h3 id="button-idx-${i}" data-index="${i}" data-lat="${results[i].latitude}" data-lng="${results[i].longitude}">${results[i].name}</h3>
+                <h3>${results[i].street}</h3>
+                <h3>${results[i].city}, ${results[i].state} ${results[i].postal_code}</h3>
             `);
             infoWindow.open(map, marker);
             map.panTo({ lat: Number(results[i].latitude), lng: Number(results[i].longitude) });
