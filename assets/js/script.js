@@ -261,12 +261,16 @@ $("#searchResults").on("click", ":button", event => {
                 var i = event.target.getAttribute('index');
                 $(`#search-${i}`).attr("placeholder", "Using Current Location");
                 $(`#search-${i}`).val("");
+                var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
+                calculateAndDisplayRoute(userCurrentLocation, destination);
             });
         }
     } else if (userCurrentLocation.useCur) {
         var i = event.target.getAttribute('index');
         $(`#search-${i}`).attr("placeholder", "Using Current Location");
         $(`#search-${i}`).val("");
+        var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng') };
+        calculateAndDisplayRoute(userCurrentLocation, destination);
     }
 });
 
@@ -395,6 +399,9 @@ function calculateAndDisplayRoute(start, end) {
 // back button listener
 $("#directionsContainer").on("click", "#backButton", event => {
     if ($(event.target).is("button")) {
+        // reset autocomplete on back
+        autocomplete = new google.maps.places.Autocomplete(document.getElementsByClassName('pac-target-input')[0]);
+
         $("#directionsContainer").removeClass("show");
         $("#directionsContainer").addClass("hide");
         $("#sidebarColumn").removeClass("hide");
