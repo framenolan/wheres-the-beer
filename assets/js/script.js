@@ -161,8 +161,8 @@ function showResults(data) {
             brewBox.append(hidden);
 
             $("#searchResults").append(brewBox);
-            $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" placeholder="Enter Start Location" class="input is-normal mt-1"></input>
-                <input type="submit" index="${i}" class="button neutral-btn mt-1" value="Get Directions"><input type="button" index="${i}" class="button neutral-btn mt-1" value="Current Location"></form>`));
+            $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" placeholder="Enter Starting Location" class="input is-normal mt-1"></input>
+                <input type="submit" index="${i}" class="button neutral-btn mt-2 mr-3" value="Get Directions"><input type="button" index="${i}" class="button neutral-btn mt-2" value="Use Current Location"></form>`));
         }
         updateMap(searchArea, data);
     }
