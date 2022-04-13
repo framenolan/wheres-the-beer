@@ -54,6 +54,7 @@ body {
 .sidebar {
     background-color: var(--secondarybg);
     max-height: 100%;
+    min-width: 30%;
     padding: 10px 10px 10px 10px;
 }
 
@@ -65,6 +66,21 @@ body {
 
 .result {
     cursor: pointer;
+}
+
+.box {
+    cursor: pointer;
+}
+
+.directionsButton {
+    background-color: var(--neutralaccent);
+    color: var(--lightwhite);
+    border: 1px solid var(--neutralaccent);
+    border-radius: 2px;
+}
+
+#backButton {
+    margin-left: 1em;
 }
 
 #mapColumn {
@@ -84,30 +100,46 @@ div.hide {
     display: none !important;
 }
 
+@media screen and (max-width: 1023px) {
+    .sidebar {
+        max-width: 100%;
+        min-width: 40%;
+    }
+
+}    
+
 @media screen and (max-width: 768px) {
     .hero-body {
         padding: 1rem 3rem !important;
     }
 
+    .main-section {
+        max-height: 100%;
+    }
+
     #mapColumn {
         height: 40vh;
-        width: 100vw;
         padding: 0;
+           
+    }
+
+    #directionsContainer {
+        min-width: 90vh;
+        max-width: 100% !important;
     }
 
     .section {
-        padding: 0;
+        padding: 5px;
+        margin-top: 2em;
     }
 
     .sidebar {
-        max-height: 35vh;
-    }
-
-    .scrollbar {
-        max-height: 15vh;
+        max-width: 100%;
+        padding: 1rem 3rem;
     }
 
     .search-results {
-        max-height: 20vh;
+        max-height: 30vh;
+        min-height: 20vh;
     }
 }
