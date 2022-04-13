@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, map, infoWindow, markers = [], bounds, previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
+var currentLocation, autocomplete, map, infoWindow, markers = [], bounds, previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -127,39 +127,51 @@ function checkTypeLatLng(data) {
             data.splice(i, 1);
         }
     }
+    return data;
 }
 
 function showResults(data) {
-
     $("#searchResults").empty();
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
         console.log(data)
-        checkTypeLatLng(data);
+        data = checkTypeLatLng(data);
         console.log(data)
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
             if (data[i].name) {
                 brewBox.append($(`<h1>${data[i].name}</h1>`));
             }
+
+            var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
             if (data[i].street) {
-                brewBox.append($(`<p>${data[i].street}</p>`));
+                hidden.append($(`<p>${data[i].street}</p>`));
             }
             if (data[i].city && data[i].state && data[i].postal_code) {
-                brewBox.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
+                hidden.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
             }
             if (data[i].phone) {
-                brewBox.append($(`<a href="tel:${data[i].phone}">${data[i].phone}</a>`));
+                hidden.append($(`<a href="tel:${data[i].phone}">${data[i].phone}</a>`)).append('<br/>');
             }
             if (data[i].website_url) {
-                brewBox.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].website_url}</a>`));
+                hidden.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].website_url}</a>`));
             }
+            brewBox.append(hidden);
+
             $("#searchResults").append(brewBox);
+            $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" size="30"></input><input type="submit" index="${i}" value="Directions From"></form>`));
         }
         updateMap(currentLocation, data);
     }
 }
+
+// $("#searchResults").on("click", "#searchResults input[type=text]", function() {
+//     var currentInp = $(this).attr("id");
+//     console.log("clicked")
+//     console.log($("#currentInp"))
+// 	var placeBox = new google.maps.places.Autocomplete(document.getElementById(currentInp));
+// });
 
 // Prints search term to top of search results
 function printSearchTerm(searchTerm) {
@@ -170,6 +182,16 @@ function printSearchTerm(searchTerm) {
 // ******* MAP ***********
 // ******* STUFF BELOW ***********
 // ******* HERE ***********
+
+// search by user input address
+$("#searchResults").on("click", ":submit", event => {
+    event.preventDefault();
+    var place = autocomplete.getPlace();
+    var start = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+    var i = event.target.getAttribute('index');
+    var destination = { lat: $(`#button-idx-${i}`).attr('data-lat'), lng: $(`#button-idx-${i}`).attr('data-lng')};
+    calculateAndDisplayRoute(start, destination);
+});
 
 // IMPORTANT: this event bubbling links the corresponding map markers map with list items
 // either way markerToggleListItem will be called so all styling and dynamic changes only need to be there
@@ -183,18 +205,27 @@ $("#searchResults").on("click", ".box", event => {
 
 function markerToggleListItem(i) {
     // to do scorll to this maybe expand, add class, make sure to remove previous one
-    if (previousListItemIndex == i) {
+    if (previousListItemIndex == i && document.activeElement.nodeName != 'INPUT') {
         $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+        $(`#hidden-${previousListItemIndex}`).hide();
+        $(`#form-${previousListItemIndex}`).hide();
         infoWindow.close();
         previousListItemIndex = null;
     } else {
-        $("#searchResults").scrollTo(`#idx-${i}`);
         $(`#idx-${i}`).css("backgroundColor", "var(--colorfulaccent)");
+        $(`#hidden-${i}`).show();
+        // add autocomplete to the search box, show search box
+        autocomplete = new google.maps.places.Autocomplete(document.getElementById(`search-${i}`));
+        $(`#form-${i}`).show();
         // change the styling of the previously clicked list item back by removing the class or whatever
         // do the opposite here of what we did above
         if (previousListItemIndex !== null) {
             $(`#idx-${previousListItemIndex}`).css("backgroundColor", "white");
+            $(`#hidden-${previousListItemIndex}`).hide();
+            $(`#form-${previousListItemIndex}`).hide();
         }
+
+        $("#searchResults").scrollTo(`#idx-${i}`);
         previousListItemIndex = i;
     }
 }
@@ -251,12 +282,12 @@ function updateMap(center, results) {
 }
 
 // display directions and draw route
-function calculateAndDisplayRoute(end) {
+function calculateAndDisplayRoute(start, end) {
     // if (!userCurrentLocation) {
     //     // to do throw warning to enable location 
     //     return;
     // }
-    const origin = new google.maps.LatLng(userCurrentLocation.lat, userCurrentLocation.lng);
+    const origin = new google.maps.LatLng(start.lat, start.lng);
     const destination = new google.maps.LatLng(end.lat, end.lng);
 
     directionsService
@@ -308,13 +339,13 @@ $("#map").on("click", ".directionsButton", event => {
             if ('geolocation' in navigator) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-                    calculateAndDisplayRoute(destination);
+                    calculateAndDisplayRoute(userCurrentLocation, destination);
                 });
             } else {
                 // no user location and user denied location access
             }
         } else {
-            calculateAndDisplayRoute(destination);
+            calculateAndDisplayRoute(userCurrentLocation, destination);
         }
     }
 });

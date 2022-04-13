@@ -12,16 +12,10 @@ body {
     min-height: 100vh;
 }
 
-.hero-body {
-    padding: 1rem 3rem !important;
+.form-box {
+    margin-top: -1.5em;
+    margin-bottom: 1em;
 }
-/* .shown {
-    display: show;
-}
-
-.hidden {
-    display: none;
-} */
 
 .primary-bg {
     background-color: var(--primarybg);
