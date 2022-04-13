@@ -1,52 +1,93 @@
-/* body {
-    background-color: darkgreen;
-    min-height: 100vh;
-} */
-
 :root {
-    --sidebarbg: crimson;
-    --obvsbg: salmon;
-
+    --primarybg: #003049;
+    --secondarybg: #72A98F;
+    --neutralaccent: #595959;
+    --colorfulaccent: #F4A259;
+    --lightwhite: #FAFAFF;
 }
 
-.shown {
+
+body {
+    background-color: var(--lightwhite);
+    min-height: 100vh;
+}
+
+.hero-body {
+    padding: 1rem 3rem !important;
+}
+/* .shown {
     display: show;
 }
 
 .hidden {
     display: none;
+} */
+
+.primary-bg {
+    background-color: var(--primarybg);
 }
 
-nav {
-    padding-left: 10px;
-    padding-right: 10px;
+.secondary-bg {
+    background-color: var(--secondarybg);
 }
 
-.body-padding {
-    padding: 20px;
+.neutral-bg {
+    background-color: var(--neutralaccent);
+}
+
+.neutral-text {
+    color: var(--neutralaccent);
+}
+
+.colorful-text {
+    color: var(--colorfulaccent);
+}
+
+.colorful-bg {
+    background-color: var(--colorfulaccent);
+}
+
+.light-white {
+    color: var(--lightwhite);
+}
+
+.neutral-btn {
+    background-color: var(--neutralaccent);
+    color: var(--lightwhite);
+    border: 1px solid var(--neutralaccent);
 }
 
 .sidebar {
-    background-color: var(--sidebarbg);
+    background-color: var(--secondarybg);
+    max-height: 100%;
+    padding: 10px 10px 10px 10px;
 }
 
 .search-results {
-    max-height: 380px;
+    max-height: 66.7%;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
 .result {
     cursor: pointer;
-    
-}
-
-.bg-obvs {
-    background-color: var(--obvsbg);
 }
 
 #mapColumn {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+.main-section {
+    max-height: 650px;
+}
+
+div.show {
+    display: block !important;
+}
+
+div.hide {
+    display: none !important;
 }
 
 @media screen and (max-width: 768px) {
