@@ -1,6 +1,6 @@
 "use strict";
 
-var currentLocation, autocomplete, map, infoWindow, markers = [], bounds, previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
+var searchArea, autocomplete, map, infoWindow, markers = [], bounds, previousListItemIndex = null, userCurrentLocation = null, directionsRenderer = null, directionsService = null;
 
 function validateEntry(e) {
     e = e.trim();
@@ -99,7 +99,7 @@ function geocode(location) {
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(res => {
             if (res && res.results && res.results.length) {
-                currentLocation = res.results[0].geometry.location;
+                searchArea = res.results[0].geometry.location;
                 // setting local storage
                 localStorage.setItem(`geocode-${location}`, JSON.stringify(res.results[0].geometry.location));
                 return res.results[0].geometry.location;
@@ -162,7 +162,7 @@ function showResults(data) {
             $("#searchResults").append(brewBox);
             $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" size="30"></input><input type="submit" index="${i}" value="Directions From"></form>`));
         }
-        updateMap(currentLocation, data);
+        updateMap(searchArea, data);
     }
 }
 
@@ -319,6 +319,7 @@ $("#directionsContainer").on("click", "#backButton", event => {
         $("#sidebarColumn").removeClass("hide");
         markers.forEach(marker => {
             bounds.extend(marker.position);
+            map.fitBounds(bounds);
             marker.setMap(map);
             marker.setAnimation(google.maps.Animation.DROP);
         });
