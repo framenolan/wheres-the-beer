@@ -133,6 +133,9 @@ function checkTypeLatLng(data) {
 
 function showResults(data) {
     $("#searchResults").empty();
+    $('html, body').animate({
+        scrollTop: $('#map').offset().top - 10
+    }, 100);
     if (data.length === 0) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
     } else {
@@ -337,6 +340,9 @@ function calculateAndDisplayRoute(start, end) {
             $("#directionsContainer").removeClass("hide");
             $("#directionsContainer").addClass("show");
             $("#sidebarColumn").addClass("hide");
+            $('html, body').animate({
+                scrollTop: $('#map').offset().top - 10
+            }, 100);
             directionsRenderer.setDirections(response);
         })
         .catch((e) => window.alert("Directions request failed due to " + e));

@@ -6,6 +6,9 @@
     --lightwhite: #FAFAFF;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     background-color: var(--lightwhite);
