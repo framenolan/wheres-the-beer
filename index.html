@@ -9,6 +9,7 @@
 	<link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="./assets/css/style.css">
 	<link rel="stylesheet" href="./assets/css/map.css">
+	<link rel="stylesheet" href="./assets/css/collage.css">
 	<title>Where's the Beer</title>
 </head>
 
@@ -26,9 +27,9 @@
 	</header>
 
 	<main>
-		<section class="section">
+		<section id="section" class="section formatPadding">
 			<div class="columns main-section">
-				<div id="sidebarColumn" class="column is-p-10 sidebar">
+				<div id="sidebarColumn" class="column is-p-10 sidebar formatCenter">
 					<div id="searchForm" class="mb-5">
 						<form class="p-2">
 							<label for="searchInput" class="label is-medium light-white">Search for Breweries:</label>
@@ -50,9 +51,19 @@
 					</div>
 				</div>
 				<div id="directionsContainer" class="hide"></div>
-				<div id="mapColumn" class="column is-three-quarters">
-					<div id="mapContainer">
+				<div id="mapColumn" class="column is-three-quarters formatFullWidth">
+					<div id="mapContainer" class="hide">
 						<div id="map"></div>
+					</div>
+					<div id="collage" class="grid">
+						<div class="grid-item1"></div>
+						<div class="grid-item2"></div>
+						<div class="grid-item3"></div>
+						<div class="grid-item4"></div>
+						<div class="grid-item5"></div>
+						<div class="grid-item6"></div>
+						<div class="grid-item7"></div>
+						<div class="grid-item8"></div>
 					</div>
 				</div>
 			</div>
@@ -61,7 +72,6 @@
 		<section class="section columns colorful-bg">
 			<div class="column is-1"></div>
 			<div class="column is-10 is-centered">
-				Yelp reviews here
 			</div>
 			<div class="column is-1"></div>
 		</section>
@@ -69,8 +79,7 @@
 		<section class="section p-3">
 			<div class="columns">
 				<!-- <div class="column is-one-quarter"></div> -->
-				<div id="collage" class="column neutral-bg">
-					Collage of photos here
+				<div class="column neutral-bg">
 				</div>
 			</div>
 		</section>
@@ -78,12 +87,11 @@
 
 	<footer></footer>
 
-  <footer></footer>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-pYFi70-5pv6ldc1jAStH871OgfoMre8&v=weekly&libraries=places"></script>
-  <script src="./assets/js/script.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-pYFi70-5pv6ldc1jAStH871OgfoMre8&v=weekly&libraries=places"></script>
+	<script src="./assets/js/script.js"></script>
 </body>
 
 </html>
