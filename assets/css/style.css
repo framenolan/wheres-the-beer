@@ -2,8 +2,7 @@
     --primarybg: #003049;
     --secondarybg: #72A98F;
     --neutralaccent: #595959;
-    --colorfulaccent: lightcyan;
-    --colorfulaccent2: #F4A259;
+    --colorfulaccent: #F4A259;
     --lightwhite: #FAFAFF;
 }
 
@@ -38,15 +37,11 @@ body {
 }
 
 .colorful-text {
-    color: var(--colorfulaccent2);
+    color: var(--colorfulaccent);
 }
 
 .colorful-bg {
     background-color: var(--colorfulaccent);
-}
-
-.colorful-bg2 {
-    background-color: var(--colorfulaccent2);
 }
 
 .light-white {
