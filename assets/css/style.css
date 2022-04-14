@@ -54,6 +54,12 @@ body {
     border: 1px solid var(--neutralaccent);
 }
 
+.gray-btn {
+    background-color: var(gray);
+    color: var(black);
+    border: 1px solid var(gray);
+}
+
 .sidebar {
     background-color: var(--secondarybg);
     max-height: 100%;
