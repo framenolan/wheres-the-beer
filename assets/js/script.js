@@ -129,10 +129,12 @@ function checkTypeLatLng(data) {
         }
 
         // give a boolean to show if something is favorited
-        for (let j = 0; j < favArray.length; j++) {
-            if (data[i].id === favArray[j].id) {
-                data[i].isFav = true;
-                j = favArray.length;
+        if (favArray) {
+            for (let j = 0; j < favArray.length; j++) {
+                if (data[i].id === favArray[j].id) {
+                    data[i].isFav = true;
+                    j = favArray.length;
+                }
             }
         }
     }
@@ -237,7 +239,7 @@ $("#searchResults").on("click", "a", event => {
         event.target.textContent = "💛";
         cacheData[i].isFav = true;
         saveFav(cacheData[i]);
-    } else if (event.target.textContent == "💛"){
+    } else if (event.target.textContent == "💛") {
         event.target.textContent = "🖤";
         cacheData[i].isFav = false;
         delFav(cacheData[i]);
