@@ -51,14 +51,12 @@ function validateEntry(e) {
 
 function getByCoord(coord) {
 	// fetch by coordinate sort by distance
-	console.log("get by coords coord ", coord);
 	if (!coord) {
 		showResults([]);
 		return;
 	}
 	fetch(`https://api.openbrewerydb.org/breweries?by_dist=${coord.lat},${coord.lng}`)
 		.then(function (response) {
-			console.log("get by coords res ", response);
 			if (!response.ok) {
 				//make sure response is ok, throw error if not
 				throw new Error('response not ok');
@@ -271,13 +269,6 @@ $("#showFavBtn").on("click", event => {
 	}
 });
 
-// $("#searchResults").on("click", "#searchResults input[type=text]", function() {
-//     var currentInp = $(this).attr("id");
-//     console.log("clicked")
-//     console.log($("#currentInp"))
-// 	var placeBox = new google.maps.places.Autocomplete(document.getElementById(currentInp));
-// });
-
 // Prints search term to top of search results
 function printSearchTerm(searchTerm) {
     $("#resultsTextDiv").empty();
@@ -409,9 +400,6 @@ function updateMap(center, results) {
 			title: results[i].name,
 			optimized: false,
 			animation: google.maps.Animation.DROP,
-			// label: results[i].name,
-			// animation: google.maps.Animation.BOUNCE,
-			// icon: './wittcode-marker.png',
 		});
 		map.fitBounds(bounds);
 		// open info window when marker is clicked
@@ -434,14 +422,13 @@ function updateMap(center, results) {
 		previousListItemIndex = null;
 	});
 	previousListItemIndex = null;
+    $('html, body').animate({
+        scrollTop: $('#map').offset().top - 10
+    }, 100);
 }
 
 // display directions and draw route
 function calculateAndDisplayRoute(start, end) {
-	// if (!userCurrentLocation) {
-	//     // to do throw warning to enable location 
-	//     return;
-	// }
 	const origin = new google.maps.LatLng(start.lat, start.lng);
 	const destination = new google.maps.LatLng(end.lat, end.lng);
 	markers.forEach(marker => marker.setMap(null));
@@ -457,9 +444,6 @@ function calculateAndDisplayRoute(start, end) {
 			$("#directionsContainer").removeClass("hide");
 			$("#directionsContainer").addClass("show");
 			$("#sidebarColumn").addClass("hide");
-			$('html, body').animate({
-				scrollTop: $('#map').offset().top - 10
-			}, 100);
 			directionsRenderer.setDirections(response);
 		})
 		.catch((e) => window.alert("Directions request failed due to " + e));
@@ -488,8 +472,6 @@ $("#map").on("click", ".directionsButton", event => {
 	if ($(event.target).is("button")) {
 		var destination = { lat: $(event.target).attr('data-lat'), lng: $(event.target).attr('data-lng') };
 
-		//markers.forEach(marker => marker.setMap(null));
-		// var index = $(event.target).attr('data-index');
 		// to do display destination name on info window
 		// make sure getting user location works properly and on time and error if not
 		if (!userCurrentLocation) {
@@ -498,12 +480,6 @@ $("#map").on("click", ".directionsButton", event => {
 					userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
 					calculateAndDisplayRoute(userCurrentLocation, destination);
 				});
-			} else {
-				// no user location and user denied location access
-				// console.log(previousListItemIndex)
-				// if (previousListItemIndex) {
-				//     markerToggleListItem(previousListItemIndex);
-				// }
 			}
 		} else {
 			calculateAndDisplayRoute(userCurrentLocation, destination);

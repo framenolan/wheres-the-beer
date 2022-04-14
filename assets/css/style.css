@@ -143,7 +143,6 @@ div.hide {
 
     .section {
         padding: 5px;
-        /* margin-top: 2em; */
     }
 
     .sidebar {
@@ -153,7 +152,6 @@ div.hide {
 
     .search-results {
         max-height: 30vh;
-        /* min-height: 20vh; */
     } 
     
     .columns:not(:last-child) {
