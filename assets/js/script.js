@@ -143,54 +143,60 @@ function checkTypeLatLng(data) {
 }
 
 function showResults(data, checked) {
-	$("#searchResults").empty();
-	$('html, body').animate({
-		scrollTop: $('#map').offset().top - 10
-	}, 100);
-	if (data.length === 0) {
-		$("#searchResults").append($(`<div class="box">No Results</div>`));
-	} else {
-		if (!checked) {
-			data = checkTypeLatLng(data);
-		}
-		// filter out non fav if showing favorites only
-		if (showingFav && cacheData) {
-			data = [];
-			for (let i = 0; i < cacheData.length; i++) {
-				if (cacheData[i].isFav) {
-					data.push(cacheData[i]);
-				}
-			}
-		}
-		// loop thru data and populate html
-		for (let i = 0; i < data.length; i++) {
-			var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
-			if (data[i].isFav) {
-				brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">💛</a></h1>`));
-			} else {
-				brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
-			}
-			var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
-			if (data[i].street) {
-				hidden.append($(`<p>${data[i].street}</p>`));
-			}
-			if (data[i].city && data[i].state && data[i].postal_code) {
-				hidden.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
-			}
-			if (data[i].phone) {
-				hidden.append($(`<a href="tel:${data[i].phone}">${data[i].phone}</a>`)).append('<br/>');
-			}
-			if (data[i].website_url) {
-				hidden.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].website_url}</a>`));
-			}
-			brewBox.append(hidden);
+    $("#searchResults").empty();
+    $('html, body').animate({
+        scrollTop: $('#map').offset().top - 10
+    }, 100);
+    if (!data) {
+        $("#searchResults").append($(`<div class="box">No Results</div>`));
+        $(".main-section").removeClass("min-height");
+    }
+    else if (data.length === 0) {
+        $("#searchResults").append($(`<div class="box">No Results</div>`));
+        $(".main-section").removeClass("min-height");
+    } else {
+        if (!checked) {
+            data = checkTypeLatLng(data);
+        }
+        // filter out non fav if showing favorites only
+        if (showingFav && cacheData) {
+            data = [];
+            for (let i = 0; i < cacheData.length; i++) {
+                if (cacheData[i].isFav) {
+                    data.push(cacheData[i]);
+                }
+            }
+        }
+        // loop thru data and populate html
+        for (let i = 0; i < data.length; i++) {
+            var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
+            if (data[i].isFav) {
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">💛</a></h1>`));
+            } else {
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
+            }
+            var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
+            if (data[i].street) {
+                hidden.append($(`<p>${data[i].street}</p>`));
+            }
+            if (data[i].city && data[i].state && data[i].postal_code) {
+                hidden.append($(`<p>${data[i].city}, ${data[i].state} ${data[i].postal_code}</p>`));
+            }
+            if (data[i].phone) {
+                hidden.append($(`<a href="tel:${data[i].phone}">${data[i].phone}</a>`)).append('<br/>');
+            }
+            if (data[i].website_url) {
+                hidden.append($(`<a href="${data[i].website_url}" target="_blank">${data[i].website_url}</a>`));
+            }
+            brewBox.append(hidden);
 
 			$("#searchResults").append(brewBox);
 			$("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" placeholder="Enter Starting Location" class="input is-normal mt-1"></input>
                 <input type="submit" index="${i}" class="button neutral-btn mt-2 mr-3" value="Get Directions"><input type="button" index="${i}" class="button neutral-btn mt-2" value="Use Current Location"></form>`));
-		}
-		updateMap(searchArea, data);
-	}
+        }
+        $(".main-section").addClass("min-height");
+        updateMap(searchArea, data);
+    }
 }
 
 //helper function to save favorites
@@ -274,8 +280,10 @@ $("#showFavBtn").on("click", event => {
 
 // Prints search term to top of search results
 function printSearchTerm(searchTerm) {
-	$("#resultsTextDiv").empty();
-	$("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium light-white">Results for "${searchTerm}"</p>`));
+    $("#resultsTextDiv").empty();
+    if (searchTerm) {
+        $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium light-white">Results for "${searchTerm}"</p>`));
+    }
 }
 
 // ******* MAP ***********
