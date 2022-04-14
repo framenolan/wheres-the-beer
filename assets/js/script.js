@@ -255,7 +255,7 @@ $("#showFavBtn").on("click", event => {
 		showResults(cacheData, false);
 	} else {
 		showingFav = true;
-		event.target.style.backgroundColor = 'yellow';
+		event.target.style.backgroundColor = '#FEE102';
 		if (!cacheData) {
 			var favArray = JSON.parse(localStorage.getItem("favBrews"));
 			showResults(favArray, true);

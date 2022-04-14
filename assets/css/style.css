@@ -2,7 +2,7 @@
     --primarybg: #003049;
     --secondarybg: #72A98F;
     --neutralaccent: #595959;
-    --colorfulaccent: #F4A259;
+    --colorfulaccent: #FEE102;
     --lightwhite: #FAFAFF;
 }
 
@@ -52,6 +52,12 @@ body {
     background-color: var(--neutralaccent);
     color: var(--lightwhite);
     border: 1px solid var(--neutralaccent);
+}
+
+.gray-btn {
+    background-color: gray;
+    color: black;
+    border: 1px solid gray;
 }
 
 .sidebar {
