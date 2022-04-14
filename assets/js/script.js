@@ -1,6 +1,6 @@
 "use strict";
 
-var searchArea, autocomplete, map, infoWindow, cacheData = null, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null, showingFav = false, initialSearch;
+var searchArea, autocomplete, map, infoWindow, cacheData = null, cacheFav = null, markers = [], bounds, previousListItemIndex = null, directionsRenderer = null, directionsService = null, showingFav = false, initialSearch;
 var userCurrentLocation = { lat: null, lng: null, useCur: false };
 
 function validateEntry(e) {
@@ -169,9 +169,9 @@ function showResults(data, checked) {
         for (let i = 0; i < data.length; i++) {
             var brewBox = $(`<div id="idx-${i}" data-index="${i}" class="box"></div>`);
             if (data[i].isFav) {
-                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">💛</a></h1>`));
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}" data-id="${data[i].id}">💛</a></h1>`));
             } else {
-                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}">🖤</a></h1>`));
+                brewBox.append($(`<h1>${data[i].name}&nbsp&nbsp<a index="${i}" data-id="${data[i].id}">🖤</a></h1>`));
             }
             var hidden = $(`<div id="hidden-${i}" style="display:none"></div>`)
             if (data[i].street) {
@@ -241,12 +241,21 @@ $("#searchResults").on("click", "a", event => {
 	var i = event.target.getAttribute('index');
 	if (event.target.textContent == "🖤") {
 		event.target.textContent = "💛";
-		cacheData[i].isFav = true;
-		saveFav(cacheData[i]);
+        if (cacheData) {
+            cacheData[i].isFav = true;
+            saveFav(cacheData[i]);
+        } else {
+            saveFav(cacheFav[i]);
+        }
 	} else if (event.target.textContent == "💛") {
 		event.target.textContent = "🖤";
-		cacheData[i].isFav = false;
-		delFav(cacheData[i]);
+        if (cacheData) {
+		    cacheData[i].isFav = false;
+            delFav(cacheData[i]);
+        } else {
+            cacheFav = JSON.parse(localStorage.getItem("favBrews"));
+            delFav(cacheFav[i]);
+        }
 	}
 });
 
