@@ -112,7 +112,7 @@ div.hide {
     #directionsContainer {
         min-width: 40%;
     }
-}    
+}
 
 @media screen and (max-width: 768px) {
     .hero-body {
@@ -126,7 +126,7 @@ div.hide {
     #mapColumn {
         height: 40vh;
         padding: 0;
-           
+
     }
 
     #directionsContainer {
@@ -148,7 +148,7 @@ div.hide {
         max-height: 30vh;
         /* min-height: 20vh; */
     }
-    
+
     .columns:not(:last-child) {
         margin-bottom: 0;
     }
