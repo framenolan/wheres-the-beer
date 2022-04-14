@@ -245,6 +245,7 @@ $("#searchResults").on("click", "a", event => {
             cacheData[i].isFav = true;
             saveFav(cacheData[i]);
         } else {
+            cacheFav = JSON.parse(localStorage.getItem("favBrews"));
             saveFav(cacheFav[i]);
         }
 	} else if (event.target.textContent == "💛") {
