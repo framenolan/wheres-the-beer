@@ -2,7 +2,8 @@
     --primarybg: #003049;
     --secondarybg: #72A98F;
     --neutralaccent: #595959;
-    --colorfulaccent: #FEE102;
+    --colorfulaccent: lightcyan;
+    --colorfulaccent2: #F4A259;
     --lightwhite: #FAFAFF;
 }
 
@@ -37,11 +38,15 @@ body {
 }
 
 .colorful-text {
-    color: var(--colorfulaccent);
+    color: var(--colorfulaccent2);
 }
 
 .colorful-bg {
     background-color: var(--colorfulaccent);
+}
+
+.colorful-bg2 {
+    background-color: var(--colorfulaccent2);
 }
 
 .light-white {
@@ -98,7 +103,8 @@ body {
 }
 
 .main-section {
-    max-height: 650px;
+    min-height: 300px;
+    max-height: calc(100vh - 425px);
 }
 
 div.show {
@@ -153,9 +159,15 @@ div.hide {
     .search-results {
         max-height: 30vh;
         /* min-height: 20vh; */
-    }
+    } 
     
     .columns:not(:last-child) {
         margin-bottom: 0;
+    }
+}
+
+@media screen and (max-height: 1020px) {
+    .min-height {
+        min-height: 640px;
     }
 }

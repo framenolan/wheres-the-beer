@@ -147,8 +147,13 @@ function showResults(data, checked) {
     $('html, body').animate({
         scrollTop: $('#map').offset().top - 10
     }, 100);
-    if (data.length === 0) {
+    if (!data) {
         $("#searchResults").append($(`<div class="box">No Results</div>`));
+        $(".main-section").removeClass("min-height");
+    }
+    else if (data.length === 0) {
+        $("#searchResults").append($(`<div class="box">No Results</div>`));
+        $(".main-section").removeClass("min-height");
     } else {
         if (!checked) {
             data = checkTypeLatLng(data);
@@ -189,6 +194,7 @@ function showResults(data, checked) {
             $("#searchResults").append($(`<form class="form-box" id="form-${i}" style="display:none"><input id="search-${i}" type="text" placeholder="Enter Starting Location" class="input is-normal mt-1"></input>
                 <input type="submit" index="${i}" class="button neutral-btn mt-2 mr-3" value="Get Directions"><input type="button" index="${i}" class="button neutral-btn mt-2" value="Use Current Location"></form>`));
         }
+        $(".main-section").addClass("min-height");
         updateMap(searchArea, data);
     }
 }
@@ -275,7 +281,9 @@ $("#showFavBtn").on("click", event => {
 // Prints search term to top of search results
 function printSearchTerm(searchTerm) {
     $("#resultsTextDiv").empty();
-    $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium light-white">Results for "${searchTerm}"</p>`));
+    if (searchTerm) {
+        $("#resultsTextDiv").append($(`<p id="resultsText" class="is-medium light-white">Results for "${searchTerm}"</p>`));
+    }
 }
 
 // ******* MAP ***********
