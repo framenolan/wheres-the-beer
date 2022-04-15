@@ -85,7 +85,7 @@ function getByName(name) {
             showResults(data, false);
         })
         .catch(function (error) {
-            console.log('get by name error')
+            console.log('get by name error', error);
         })
 }
 
@@ -94,7 +94,12 @@ function geocode(location) {
     // OR city + state encoded ex. san%20diego+ca
     let url = `https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyA-pYFi70-5pv6ldc1jAStH871OgfoMre8&address=${location}`;
     return fetch(url)
-        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('response not ok');
+            }
+            return response.json();
+        })
         .then(res => {
             if (res && res.results && res.results.length) {
                 searchArea = res.results[0].geometry.location;
@@ -102,13 +107,12 @@ function geocode(location) {
                 localStorage.setItem(`geocode-${location}`, JSON.stringify(res.results[0].geometry.location));
                 return res.results[0].geometry.location;
             } else {
-                Promise.reject(res);
+                throw new Error("Caught error: invalid search term");
                 // to do display error to user with input
-                return null;
             }
         })
         .catch(err => {
-            console.log("err: ", err);
+            console.log(err);
         });
 }
 
