@@ -88,9 +88,28 @@
 
 #mapColumn.formatFullWidth {
 	width: 100vw;
-	height: 380px;
 }
 
 .formatPadding {
 	padding: 2rem 1rem 2rem 1rem;
+}
+
+@media screen and (min-width: 768px) {
+	#mapColumn.formatFullWidth {
+		height: calc((100vh - 310px));
+	}
+
+	#section {
+		min-height: calc((100vh - 260px));
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#mapColumn.formatFullWidth {
+		height: calc((100vh - 203px));
+	}
+
+	#section {
+		min-height: calc((100vh - 153px));
+	}
 }
