@@ -99,7 +99,7 @@ body {
 
 .main-section {
     min-height: 300px;
-    max-height: calc(100vh - 425px);
+    max-height: calc(100vh - 377px);
 }
 
 div.show {
@@ -108,6 +108,22 @@ div.show {
 
 div.hide {
     display: none !important;
+}
+
+#searchForm .button {
+    width: 45%;
+}
+
+#searchResults {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+#searchResults::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
 }
 
 @media screen and (max-width: 1023px) {
@@ -152,8 +168,8 @@ div.hide {
 
     .search-results {
         max-height: 30vh;
-    } 
-    
+    }
+
     .columns:not(:last-child) {
         margin-bottom: 0;
     }
