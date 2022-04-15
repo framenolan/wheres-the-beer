@@ -14,7 +14,7 @@ The following image shows the web application's appearance:
 
 ## Link
 
-[Live site](https://github.com/framenolan/wheres-the-beer)
+[Live site](https://framenolan.github.io/wheres-the-beer/)
 
 ## Roles
 
