@@ -4,6 +4,14 @@
 
 This app enables users to search for breweries, displays those search results on a map, draws the route to the selected brewery and provide driving directions to the selected brewery. This app runs in the browser and features dynamically updated HTML and CSS powered by Javascript and jQuery.We utilized Moment.js while working with the date and time and local storage for persistence. It also has a clean and polished, responsive user interface that adapts to multiple screen sizes.
 
+## User Story
+
+```md
+AS A beer enthusiast
+I WANT to search for a list of breweries
+SO THAT I can choose a destination and get directions to that destination.
+```
+
 ## Mock-Up
 
 The following image shows the web application's appearance:
