@@ -64,7 +64,7 @@ function getByCoord(coord) {
             return response.json();
         })
         .then(function (data) {
-            showResults(data, false);
+            showResults(data);
         })
         .catch(function (error) {
             console.log('getByCoord error ', error);
@@ -82,7 +82,7 @@ function getByName(name) {
             return response.json();
         })
         .then(function (data) {
-            showResults(data, false);
+            showResults(data);
         })
         .catch(function (error) {
             console.log('get by name error')
@@ -102,8 +102,6 @@ function geocode(location) {
                 localStorage.setItem(`geocode-${location}`, JSON.stringify(res.results[0].geometry.location));
                 return res.results[0].geometry.location;
             } else {
-                Promise.reject(res);
-                // to do display error to user with input
                 return null;
             }
         })
@@ -129,7 +127,7 @@ function checkTypeLatLng(data) {
     return data;
 }
 
-function showResults(data, checked) {
+function showResults(data) {
     $("#searchResults").empty();
     $('html, body').animate({
         scrollTop: $('#map').offset().top - 10
@@ -284,15 +282,15 @@ $("#showFavBtn").on("click", event => {
     if (showingFav) {
         showingFav = false;
         event.target.style.backgroundColor = 'gray';
-        showResults(cacheData, false);
+        showResults(cacheData);
     } else {
         showingFav = true;
         event.target.style.backgroundColor = '#FEE102';
         if (!cacheData) {
             var favArray = JSON.parse(localStorage.getItem("favBrews"));
-            showResults(favArray, true);
+            showResults(favArray);
         } else {
-            showResults(cacheData, true);
+            showResults(cacheData);
         }
     }
 });
@@ -328,7 +326,7 @@ $("#searchResults").on("click", ":submit", event => {
 // enter current location as starting point
 $("#searchResults").on("click", ":button", event => {
     event.preventDefault();
-    if (!userCurrentLocation.lat) {
+    if (!userCurrentLocation.lat && !userCurrentLocation.useCur) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 userCurrentLocation = { lat: position.coords.latitude, lng: position.coords.longitude, useCur: true };
@@ -339,7 +337,7 @@ $("#searchResults").on("click", ":button", event => {
                 calculateAndDisplayRoute(userCurrentLocation, destination);
             });
         }
-    } else if (userCurrentLocation.useCur) {
+    } else if (userCurrentLocation.lat) {
         var i = event.target.getAttribute('index');
         $(`#search-${i}`).attr("placeholder", "Using Current Location");
         $(`#search-${i}`).val("");
