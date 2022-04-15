@@ -1,0 +1,115 @@
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	height: 100%;
+	grid-gap: 10px;
+	width: auto;
+}
+
+.grid-item1 {
+	background-image: url("../images/brewery1.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 1/4;
+	grid-row: 1/2;
+}
+
+.grid-item2 {
+	background-image: url("../images/brewery2.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 1/2;
+	grid-row: 2/5;
+}
+
+.grid-item3 {
+	background-image: url("../images/brewery3.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 1/5;
+	grid-row: 5/5;
+}
+
+.grid-item4 {
+	background-image: url("../images/brewery4.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 2/4;
+	grid-row: 2/5;
+}
+
+.grid-item5 {
+	background-image: url("../images/brewery5.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 4/6;
+	grid-row: 1/3;
+}
+
+.grid-item6 {
+	background-image: url("../images/brewery6.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 4/5;
+	grid-row: 3/5;
+}
+
+.grid-item7 {
+	background-image: url("../images/brewery7.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 5/6;
+	grid-row: 3/6;
+}
+
+.grid-item8 {
+	background-image: url("../images/brewery8.jpeg");
+	background-size: cover;
+	background-position: center;
+	grid-column: 6/8;
+	grid-row: 1/6;
+}
+
+#sidebarColumn.formatCenter {
+	position: absolute;
+	right: calc((50vw - 180px));
+	background-color: rgba(114, 169, 143, .8);
+	margin-top: 90px;
+}
+
+#mapColumn.formatFullWidth {
+	width: 100vw;
+}
+
+.formatPadding {
+	padding: 2rem 1rem 2rem 1rem;
+}
+
+@media screen and (min-width: 768px) {
+	#mapColumn.formatFullWidth {
+		height: calc((100vh - 310px));
+	}
+
+	#section {
+		min-height: calc((100vh - 260px));
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#mapColumn.formatFullWidth {
+		height: calc((100vh - 203px));
+	}
+
+	#section {
+		min-height: calc((100vh - 153px));
+	}
+}

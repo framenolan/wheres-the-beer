@@ -1,0 +1,182 @@
+:root {
+    --primarybg: #003049;
+    --secondarybg: #72A98F;
+    --neutralaccent: #595959;
+    --colorfulaccent: #F4A259;
+    --lightwhite: #FAFAFF;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--lightwhite);
+    min-height: 100vh;
+}
+
+.form-box {
+    margin-top: -1.5em;
+    margin-bottom: 1em;
+}
+
+.primary-bg {
+    background-color: var(--primarybg);
+}
+
+.secondary-bg {
+    background-color: var(--secondarybg);
+}
+
+.neutral-bg {
+    background-color: var(--neutralaccent);
+}
+
+.neutral-text {
+    color: var(--neutralaccent);
+}
+
+.colorful-text {
+    color: var(--colorfulaccent);
+}
+
+.colorful-bg {
+    background-color: var(--colorfulaccent);
+}
+
+.light-white {
+    color: var(--lightwhite);
+}
+
+.neutral-btn {
+    background-color: var(--neutralaccent);
+    color: var(--lightwhite);
+    border: 1px solid var(--neutralaccent);
+}
+
+.gray-btn {
+    background-color: gray;
+    color: black;
+    border: 1px solid gray;
+}
+
+.sidebar {
+    background-color: var(--secondarybg);
+    max-height: 100%;
+    min-width: 30%;
+    padding: 10px 10px 10px 10px;
+}
+
+.search-results {
+    max-height: 66.7%;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.result {
+    cursor: pointer;
+}
+
+.box {
+    cursor: pointer;
+}
+
+.directionsButton {
+    background-color: var(--neutralaccent);
+    color: var(--lightwhite);
+    border: 1px solid var(--neutralaccent);
+    border-radius: 2px;
+}
+
+#backButton {
+    margin-left: 1em;
+}
+
+#mapColumn {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.main-section {
+    min-height: 300px;
+    max-height: calc(100vh - 377px);
+}
+
+div.show {
+    display: block !important;
+}
+
+div.hide {
+    display: none !important;
+}
+
+#searchForm .button {
+    width: 45%;
+}
+
+#searchResults {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+#searchResults::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+@media screen and (max-width: 1023px) {
+    .sidebar {
+        max-width: 100%;
+        min-width: 40%;
+    }
+
+    #directionsContainer {
+        min-width: 40%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hero-body {
+        padding: 1rem 3rem !important;
+    }
+
+    .main-section {
+        max-height: 100%;
+    }
+
+    #mapColumn {
+        height: 40vh;
+        padding: 0;
+
+    }
+
+    #directionsContainer {
+        max-width: 100% !important;
+        min-width: 90vw;
+    }
+
+    .section {
+        padding: 5px;
+    }
+
+    .sidebar {
+        max-width: 100%;
+        padding: 1rem 3rem;
+    }
+
+    .search-results {
+        max-height: 30vh;
+    }
+
+    .columns:not(:last-child) {
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (max-height: 1020px) {
+    .min-height {
+        min-height: 640px;
+    }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+	<link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./assets/css/style.css">
+	<link rel="stylesheet" href="./assets/css/map.css">
+	<link rel="stylesheet" href="./assets/css/collage.css">
+	<title>Where's the Beer</title>
+</head>
+
+<body>
+
+	<header class="hero primary-bg">
+		<div class="hero-body">
+			<p class="title colorful-text">
+				Where's the Beer?
+			</p>
+			<p class="subtitle light-white">
+				Brewery Directory
+			</p>
+		</div>
+	</header>
+
+	<main>
+		<section id="section" class="section formatPadding">
+			<div class="columns main-section">
+				<div id="sidebarColumn" class="column is-p-10 sidebar formatCenter">
+					<div id="searchForm" class="mb-5">
+						<form class="p-2">
+							<label for="searchInput" class="label is-medium light-white">Search for Breweries:</label>
+							<input id="searchInput" class="input is-medium mb-3" type="text"
+								placeholder="Name / Zip / or City,State">
+							<div class="is-flex is-justify-content-space-between">
+								<button class="button neutral-btn" id="searchBtn">Search</button>
+								<button class="button gray-btn" id="showFavBtn">Favorites</button>
+							</div>
+						</form>
+						<div class="content" id="resultsTextDiv">
+							<p id="resultsText">
+
+							</p>
+						</div>
+					</div>
+					<div class="search-results" id="searchResults">
+
+					</div>
+				</div>
+				<div id="directionsContainer" class="hide"></div>
+				<div id="mapColumn" class="column is-three-quarters formatFullWidth">
+					<div id="mapContainer" class="hide">
+						<div id="map"></div>
+					</div>
+					<div id="collage" class="grid">
+						<div class="grid-item1"></div>
+						<div class="grid-item2"></div>
+						<div class="grid-item3"></div>
+						<div class="grid-item4"></div>
+						<div class="grid-item5"></div>
+						<div class="grid-item6"></div>
+						<div class="grid-item7"></div>
+						<div class="grid-item8"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="section columns colorful-bg">
+			<div class="column is-1"></div>
+			<div class="column is-10 is-centered">
+			</div>
+			<div class="column is-1"></div>
+		</section>
+
+		<section class="section p-3">
+			<div class="columns">
+				<!-- <div class="column is-one-quarter"></div> -->
+				<div class="column neutral-bg">
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer></footer>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-pYFi70-5pv6ldc1jAStH871OgfoMre8&v=weekly&libraries=places"></script>
+	<script src="./assets/js/script.js"></script>
+</body>
+
+</html>
